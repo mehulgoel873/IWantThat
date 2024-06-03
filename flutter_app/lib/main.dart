@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,8 +32,17 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
 
+  File? _selectedImage;
+
   void getNext() {
     current = WordPair.random();
+    notifyListeners();
+  }
+
+  void pickImageFromCamera() async {
+    final returnedImage = await ImagePicker().pickImage(
+        source: ImageSource.gallery); //TODO: Change ImageSource to Camera
+    _selectedImage = File(returnedImage!.path);
     notifyListeners();
   }
 }
@@ -51,6 +64,23 @@ class MyHomePage extends StatelessWidget {
             },
             child: Text('Next'),
           ),
+          MaterialButton(
+              color: Colors.red,
+              child: const Text("Pick Image from Camera",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16)),
+              onPressed: () {
+                print("Capture Image Button Pressed");
+                appState.pickImageFromCamera();
+              }),
+          const SizedBox(
+            height: 20,
+          ),
+          appState._selectedImage != null
+              ? Image.file(appState._selectedImage!)
+              : Text("Please select an image ")
         ],
       ),
     );
