@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_vertexai/firebase_vertexai.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
   runApp(MyApp());
 }
 
@@ -43,7 +48,32 @@ class MyAppState extends ChangeNotifier {
     final returnedImage = await ImagePicker().pickImage(
         source: ImageSource.gallery); //TODO: Change ImageSource to Camera
     _selectedImage = File(returnedImage!.path);
+    print("Selected Image Done!");
     notifyListeners();
+  }
+
+  void startGenAI() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    final model =
+        FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
+    print("Initialized Firebase App");
+
+    // Provide a prompt that contains text
+    final prompt = TextPart(
+        "Describe what is in the photo from the perspective of someone trying to commission it from an artist.");
+
+    if (_selectedImage == null) {
+      print("Select a file before generating the text!");
+    } else {
+      final image = await _selectedImage!.readAsBytes();
+      final imagePart = DataPart('image/jpeg', image);
+      final response = await model.generateContent([
+        Content.multi([prompt, imagePart])
+      ]);
+      print(response.text);
+    }
   }
 }
 
@@ -74,6 +104,17 @@ class MyHomePage extends StatelessWidget {
               onPressed: () {
                 print("Capture Image Button Pressed");
                 appState.pickImageFromCamera();
+              }),
+          MaterialButton(
+              color: Colors.red,
+              child: const Text("Initialize Gen AI Model",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16)),
+              onPressed: () {
+                print("Pressed GEN AI Button");
+                appState.startGenAI();
               }),
           const SizedBox(
             height: 20,
