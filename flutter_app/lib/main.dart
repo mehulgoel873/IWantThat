@@ -25,9 +25,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Namer App',
         theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        ),
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+            scaffoldBackgroundColor:
+                ColorScheme.fromSeed(seedColor: Colors.green).primaryContainer),
         home: MyHomePage(),
       ),
     );
@@ -35,19 +36,21 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-  var favorites = <WordPair>[];
   File? _selectedImage;
-
-  void getNext() {
-    current = WordPair.random();
-    notifyListeners();
-  }
+  String? context;
 
   void pickImageFromCamera() async {
     final returnedImage = await ImagePicker().pickImage(
         source: ImageSource.gallery); //TODO: Change ImageSource to Camera
-    _selectedImage = File(returnedImage!.path);
+    if (returnedImage != null) _selectedImage = File(returnedImage!.path);
+    print("Selected Image Done!");
+    notifyListeners();
+  }
+
+  void pickImageFromLibrary() async {
+    final returnedImage = await ImagePicker().pickImage(
+        source: ImageSource.gallery); //TODO: Change ImageSource to Camera
+    if (returnedImage != null) _selectedImage = File(returnedImage!.path);
     print("Selected Image Done!");
     notifyListeners();
   }
@@ -75,15 +78,6 @@ class MyAppState extends ChangeNotifier {
       print(response.text);
     }
   }
-
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
-    } else {
-      favorites.add(current);
-    }
-    notifyListeners();
-  }
 }
 
 // ...
@@ -101,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = GeneratorPage();
+        page = PhotoPage();
         break;
       case 1:
         page = Placeholder();
@@ -110,80 +104,94 @@ class _MyHomePageState extends State<MyHomePage> {
         throw UnimplementedError('no widget for selected index');
     }
     return Scaffold(
-      body: SafeArea(
-        child: Row(
-          children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: false,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Home'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
-                    label: Text('Favorites'),
-                  ),
-                ],
-                selectedIndex: selectedIndex,
-                onDestinationSelected: (value) {
-                  setState(() {
-                    selectedIndex = value;
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: Container(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: page,
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: SafeArea(child: page),
     );
   }
 }
 
-class GeneratorPage extends StatelessWidget {
+class PhotoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
+    final theme = Theme.of(context);
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BigCard(pair: pair),
+          BigCard(text: "I Want THAT!"),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 30.0, right: 30.0, top: 15.0, bottom: 5.0),
+            child: Text(
+                "Upload or take an image of an object you want comissioned, or explain it in text! Using this information, this app will figure out the best artists to make this for you.",
+                style: theme.textTheme.bodyLarge!
+                    .copyWith(color: theme.colorScheme.onSurface)),
+          ),
           SizedBox(height: 10),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton.icon(
                 onPressed: () {
-                  appState.toggleFavorite();
+                  print("Capture Image Button Pressed Library");
+                  appState.pickImageFromLibrary();
                 },
-                icon: Icon(icon),
-                label: Text('Like'),
+                icon: Icon(Icons.photo_album_outlined),
+                label: Text('Upload a photo'),
               ),
-              SizedBox(width: 10),
-              ElevatedButton(
+              SizedBox(width: 20),
+              ElevatedButton.icon(
                 onPressed: () {
-                  appState.getNext();
+                  print("Capture Image Button Pressed Library");
+                  appState.pickImageFromCamera();
                 },
-                child: Text('Next'),
+                icon: Icon(Icons.photo_camera_outlined),
+                label: Text('Take a photo'),
               ),
             ],
+          ),
+          appState._selectedImage != null
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                      height: 250.0,
+                      child: Image.file(appState._selectedImage!)),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Card(
+                    color: theme.colorScheme.primary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text("Please select an image ",
+                          style: theme.textTheme.bodyLarge!
+                              .copyWith(color: theme.colorScheme.onPrimary)),
+                    ),
+                  ),
+                ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+            child: TextFormField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter information about the comission"),
+                onSaved: (String? value) {
+                  appState.context = value;
+                  if (appState.context != null) print(appState.context);
+                  print("saved!");
+                },
+                validator: (String? value) {
+                  return null;
+                }),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              print("Find the ARTIST button pressed");
+              appState.startGenAI();
+            },
+            icon: Icon(Icons.person_search_outlined),
+            label: Text("Find an Artist"),
           ),
         ],
       ),
@@ -196,10 +204,10 @@ class GeneratorPage extends StatelessWidget {
 class BigCard extends StatelessWidget {
   const BigCard({
     super.key,
-    required this.pair,
+    required this.text,
   });
 
-  final WordPair pair;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -213,39 +221,10 @@ class BigCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Text(
-          pair.asLowerCase,
+          text,
           style: style,
         ),
       ),
     );
   }
 }
-
-// MaterialButton(
-//     color: Colors.red,
-//     child: const Text("Pick Image from Camera",
-//         style: TextStyle(
-//             color: Colors.white,
-//             fontWeight: FontWeight.bold,
-//             fontSize: 16)),
-//     onPressed: () {
-//       print("Capture Image Button Pressed");
-//       appState.pickImageFromCamera();
-//     }),
-// MaterialButton(
-//     color: Colors.red,
-//     child: const Text("Initialize Gen AI Model",
-//         style: TextStyle(
-//             color: Colors.white,
-//             fontWeight: FontWeight.bold,
-//             fontSize: 16)),
-//     onPressed: () {
-//       print("Pressed GEN AI Button");
-//       appState.startGenAI();
-//     }),
-// const SizedBox(
-//   height: 20,
-// ),
-// appState._selectedImage != null
-//     ? Image.file(appState._selectedImage!)
-//     : Text("Please select an image ")
