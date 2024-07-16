@@ -11,6 +11,8 @@ import 'firebase_options.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'artist.dart';
+
 void main() async {
   runApp(MyApp());
 }
@@ -38,6 +40,28 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   File? _selectedImage;
   String? context;
+  int selectedIndex = 0;
+
+  var artists = <Artist>[
+    Artist(
+        "Becka Stevens",
+        "I work on a variety of projects, primarily about national waterfalls.",
+        "(123)-456-7890",
+        "iwantthat@gmail.com",
+        "@beckie"),
+    Artist(
+        "Becka Stevens",
+        "I work on a variety of projects, primarily about national waterfalls.",
+        "(123)-456-7890",
+        "iwantthat@gmail.com",
+        "@beckie"),
+    Artist(
+        "Becka Stevens",
+        "I work on a variety of projects, primarily about national waterfalls.",
+        "(123)-456-7890",
+        "iwantthat@gmail.com",
+        "@beckie"),
+  ];
 
   void pickImageFromCamera() async {
     final returnedImage = await ImagePicker().pickImage(
@@ -88,12 +112,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
     Widget page;
-    switch (selectedIndex) {
+    switch (appState.selectedIndex) {
       case 0:
         page = PhotoPage();
         break;
@@ -185,10 +208,15 @@ class PhotoPage extends StatelessWidget {
                   return null;
                 }),
           ),
+          SizedBox(
+            height: 10,
+          ),
           ElevatedButton.icon(
             onPressed: () {
               print("Find the ARTIST button pressed");
               appState.startGenAI();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ArtistPage()));
             },
             icon: Icon(Icons.person_search_outlined),
             label: Text("Find an Artist"),
@@ -198,8 +226,6 @@ class PhotoPage extends StatelessWidget {
     );
   }
 }
-
-// ...
 
 class BigCard extends StatelessWidget {
   const BigCard({
@@ -223,6 +249,37 @@ class BigCard extends StatelessWidget {
         child: Text(
           text,
           style: style,
+        ),
+      ),
+    );
+  }
+}
+
+class ArtistPage extends StatelessWidget {
+  const ArtistPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    final theme = Theme.of(context);
+    return Scaffold(
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.center,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  icon: Icon(Icons.home_outlined),
+                  label: Text('Home'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ArtistCard(artist: appState.artists[0]),
+                ArtistCard(artist: appState.artists[1]),
+                ArtistCard(artist: appState.artists[2]),
+              ]),
         ),
       ),
     );
