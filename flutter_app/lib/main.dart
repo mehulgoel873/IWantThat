@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,23 +45,26 @@ class MyAppState extends ChangeNotifier {
 
   var artists = <Artist>[
     Artist(
-        "Becka Stevens",
-        "I work on a variety of projects, primarily about national waterfalls.",
-        "(123)-456-7890",
-        "iwantthat@gmail.com",
-        "@beckie"),
+        name: "Becka Stevens",
+        description:
+            "I work on a variety of projects, primarily about national waterfalls.",
+        phone: "(123)-456-7890",
+        email: "iwantthat@gmail.com",
+        twitter: "@beckie"),
     Artist(
-        "Becka Stevens",
-        "I work on a variety of projects, primarily about national waterfalls.",
-        "(123)-456-7890",
-        "iwantthat@gmail.com",
-        "@beckie"),
+        name: "Becka Stevens",
+        description:
+            "I work on a variety of projects, primarily about national waterfalls.",
+        phone: "(123)-456-7890",
+        email: "iwantthat@gmail.com",
+        twitter: "@beckie"),
     Artist(
-        "Becka Stevens",
-        "I work on a variety of projects, primarily about national waterfalls.",
-        "(123)-456-7890",
-        "iwantthat@gmail.com",
-        "@beckie"),
+        name: "Becka Stevens",
+        description:
+            "I work on a variety of projects, primarily about national waterfalls.",
+        phone: "(123)-456-7890",
+        email: "iwantthat@gmail.com",
+        twitter: "@beckie"),
   ];
 
   void pickImageFromCamera() async {
@@ -101,6 +105,18 @@ class MyAppState extends ChangeNotifier {
       ]);
       print(response.text);
     }
+
+    await Firebase.initializeApp();
+    final db = FirebaseFirestore.instance;
+
+    final artistsDB = db.collection("artists");
+    final ref =
+        db.collection("artists").doc("5EFflj5Ede2xdmUtmzcR").withConverter(
+              fromFirestore: Artist.fromFirestore,
+              toFirestore: (Artist city, _) => city.toFirestore(),
+            );
+    final docSnap = await ref.get();
+    artists[1] = docSnap.data()!; //TODO: Fix null check here
   }
 }
 

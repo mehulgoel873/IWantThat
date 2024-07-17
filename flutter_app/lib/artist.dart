@@ -1,20 +1,44 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Artist {
-  String name = "";
-  String description = "";
-  String phone = "";
-  String email = "";
-  String twitter = "";
+  final String? name;
+  final String? description;
+  final String? phone;
+  final String? email;
+  final String? twitter;
 
-  Artist(String name, String description, String phone, String email,
-      String twitter) {
-    this.name = name;
-    this.description = description;
-    this.phone = phone;
-    this.email = email;
-    this.twitter = twitter;
+  Artist({
+    this.name,
+    this.description,
+    this.phone,
+    this.email,
+    this.twitter,
+  });
+
+  factory Artist.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Artist(
+      name: data?['name'],
+      description: data?['Job Description'],
+      phone: data?['phone'],
+      email: data?['email'],
+      twitter: data?['twitter'],
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      if (name != null) "name": name,
+      if (description != null) "description": description,
+      if (phone != null) "phone": phone,
+      if (email != null) "email": email,
+      if (twitter != null) "twitter": twitter,
+    };
   }
 }
 
@@ -44,10 +68,10 @@ class ArtistCard extends StatelessWidget {
                   children: [
                     Align(
                         alignment: Alignment.topLeft,
-                        child: Text(artist.name,
+                        child: Text(artist.name!,
                             style: theme.textTheme.headlineMedium!
                                 .copyWith(color: theme.colorScheme.onPrimary))),
-                    Text(artist.description,
+                    Text(artist.description!,
                         style: theme.textTheme.bodySmall!
                             .copyWith(color: theme.colorScheme.onPrimary)),
                   ],
@@ -66,7 +90,7 @@ class ArtistCard extends StatelessWidget {
                             icon: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Icon(Icons.phone_iphone_outlined)),
-                            label: Text(artist.phone,
+                            label: Text(artist.phone!,
                                 style: theme.textTheme.bodySmall)),
                       ),
                       SizedBox(
@@ -78,7 +102,7 @@ class ArtistCard extends StatelessWidget {
                             icon: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Icon(Icons.mail_outlined)),
-                            label: Text(artist.email,
+                            label: Text(artist.email!,
                                 style: theme.textTheme.bodySmall)),
                       ),
                       SizedBox(
@@ -90,7 +114,8 @@ class ArtistCard extends StatelessWidget {
                             icon: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Icon(FontAwesomeIcons.twitter)),
-                            label: Text(artist.twitter,
+                            label: Text(
+                                artist.twitter!, //TODO: FIX ALL NULL CHECKS
                                 style: theme.textTheme.bodySmall)),
                       ),
                     ],
