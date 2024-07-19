@@ -15,6 +15,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'artist.dart';
+import 'profile.dart';
 
 void main() async {
   runApp(MyApp());
@@ -42,28 +43,54 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
   File? _selectedImage;
-  String? context;
+  String contextualClues = "";
   int selectedIndex = 0;
+  var model;
+  var db;
+  var artistsDB;
+
+  MyAppState() {
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    try {
+      final userCredential = await FirebaseAuth.instance.signInAnonymously();
+      print("Signed in with temporary account.");
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "operation-not-allowed":
+          print("Anonymous auth hasn't been enabled for this project.");
+          break;
+        default:
+          print("Unknown error.");
+      }
+    }
+    model =
+        FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
+
+    print("Initialized Firebase App");
+  }
 
   var artists = <Artist>[
     Artist(
-        name: "Becka Stevens",
-        description:
-            "I work on a variety of projects, primarily about national waterfalls.",
+        name: "DUMMY ARTIST",
+        description: "THIS SHOULD NEVER BE SEEN BY ANYONE!!!!",
         phone: "(123)-456-7890",
         email: "iwantthat@gmail.com",
         twitter: "@beckie"),
     Artist(
-        name: "Becka Stevens",
-        description:
-            "I work on a variety of projects, primarily about national waterfalls.",
+        name: "DUMMY ARTIST",
+        description: "THIS SHOULD NEVER BE SEEN BY ANYONE!!!!",
         phone: "(123)-456-7890",
         email: "iwantthat@gmail.com",
         twitter: "@beckie"),
     Artist(
-        name: "Becka Stevens",
-        description:
-            "I work on a variety of projects, primarily about national waterfalls.",
+        name: "DUMMY ARTIST",
+        description: "THIS SHOULD NEVER BE SEEN BY ANYONE!!!!",
         phone: "(123)-456-7890",
         email: "iwantthat@gmail.com",
         twitter: "@beckie"),
@@ -85,41 +112,26 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void startGenAI() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    try {
-      final userCredential = await FirebaseAuth.instance.signInAnonymously();
-      print("Signed in with temporary account.");
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case "operation-not-allowed":
-          print("Anonymous auth hasn't been enabled for this project.");
-          break;
-        default:
-          print("Unknown error.");
-      }
-    }
-    final model =
-        FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
-    print("Initialized Firebase App");
-
+  Future startGenAI() async {
     // Provide a prompt that contains text
+    Stopwatch stopwatch = new Stopwatch()..start();
     final prompt = TextPart(
-        "Describe what is in the photo from the perspective of someone trying to commission it from an artist.");
+        "Describe what is in the photo from the perspective of someone trying to commission it from an artist. Here is some additional contextual information about the image: " +
+            contextualClues);
 
     final response;
     if (_selectedImage == null) {
       print("Select a file before generating the text!");
-      return;
+      return false;
     } else {
       final image = await _selectedImage!.readAsBytes();
       final imagePart = DataPart('image/jpeg', image);
+      print('Artist queries executed in ${stopwatch.elapsed}');
       response = await model.generateContent([
         Content.multi([prompt, imagePart])
       ]);
     }
+    print('Artist queries executed in ${stopwatch.elapsed}');
 
     final result = await FirebaseFunctions.instance
         .httpsCallable('ext-firestore-vector-search-queryCallable')
@@ -128,34 +140,48 @@ class MyAppState extends ChangeNotifier {
         "query": response.text,
       },
     );
+    print(prompt.toString());
+    print("\n");
     print(response.text);
     print("\n");
     print(result.data);
+    print('Artist queries executed in ${stopwatch.elapsed}');
 
+    print(result.data["ids"][0]);
     await Firebase.initializeApp();
-    final db = FirebaseFirestore.instance;
-
-    final artistsDB = db.collection("artists");
-    var ref = db.collection("artists").doc(result.data["ids"][0]).withConverter(
+    db = FirebaseFirestore.instance;
+    artistsDB = db.collection("artists");
+    DocumentReference<Artist> ref = db
+        .collection("artists")
+        .doc(result.data["ids"][0])
+        .withConverter<Artist>(
           fromFirestore: Artist.fromFirestore,
-          toFirestore: (Artist city, _) => city.toFirestore(),
+          toFirestore: (Artist artisan, SetOptions? _) => artisan.toFirestore(),
         );
     var docSnap = await ref.get();
     artists[0] = docSnap.data()!; //TODO: Fix null check here
 
-    ref = db.collection("artists").doc(result.data["ids"][1]).withConverter(
+    ref = db
+        .collection("artists")
+        .doc(result.data["ids"][1])
+        .withConverter<Artist>(
           fromFirestore: Artist.fromFirestore,
-          toFirestore: (Artist city, _) => city.toFirestore(),
+          toFirestore: (Artist artisan, _) => artisan.toFirestore(),
         );
     docSnap = await ref.get();
     artists[1] = docSnap.data()!; //TODO: Fix null check here
 
-    ref = db.collection("artists").doc(result.data["ids"][2]).withConverter(
+    ref = db
+        .collection("artists")
+        .doc(result.data["ids"][2])
+        .withConverter<Artist>(
           fromFirestore: Artist.fromFirestore,
-          toFirestore: (Artist city, _) => city.toFirestore(),
+          toFirestore: (Artist artisan, _) => artisan.toFirestore(),
         );
     docSnap = await ref.get();
     artists[2] = docSnap.data()!; //TODO: Fix null check here
+    print(artists);
+    return true;
   }
 }
 
@@ -248,31 +274,49 @@ class PhotoPage extends StatelessWidget {
                 ),
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: TextFormField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Enter information about the comission"),
-                onSaved: (String? value) {
-                  appState.context = value;
-                  if (appState.context != null) print(appState.context);
-                  print("saved!");
-                },
-                validator: (String? value) {
-                  return null;
-                }),
+            child: TextField(
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "Enter information about the comission"),
+              onChanged: (text) {
+                appState.contextualClues = text;
+              },
+            ),
           ),
           SizedBox(
             height: 10,
           ),
-          ElevatedButton.icon(
-            onPressed: () {
-              print("Find the ARTIST button pressed");
-              appState.startGenAI();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ArtistPage()));
-            },
-            icon: Icon(Icons.person_search_outlined),
-            label: Text("Find an Artist"),
+          Align(
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    print("ARTIST button pressed");
+                    bool check = await appState.startGenAI();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ArtistPage()));
+                  },
+                  icon: Icon(Icons.person_search_outlined),
+                  label: Text("Find an Artist"),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    print("Profile Page Pressed");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProfilePage()));
+                  },
+                  icon: Icon(Icons.brush_outlined),
+                  label: Text("Update Artist Profile"),
+                ),
+              ],
+            ),
           ),
         ],
       ),

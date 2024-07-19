@@ -31,7 +31,7 @@ class Artist {
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, Object?> toFirestore() {
     return {
       if (name != null) "name": name,
       if (description != null) "description": description,
