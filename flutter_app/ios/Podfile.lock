@@ -7,6 +7,10 @@ PODS:
     - Firebase/Firestore (= 10.28.0)
     - firebase_core
     - Flutter
+  - cloud_functions (5.0.3):
+    - Firebase/Functions (= 10.28.0)
+    - firebase_core
+    - Flutter
   - Firebase/Auth (10.28.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 10.28.0)
@@ -15,6 +19,9 @@ PODS:
   - Firebase/Firestore (10.28.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 10.28.0)
+  - Firebase/Functions (10.28.0):
+    - Firebase/CoreOnly
+    - FirebaseFunctions (~> 10.28.0)
   - firebase_app_check (0.3.0-3):
     - Firebase/CoreOnly (~> 10.28.0)
     - firebase_core
@@ -42,6 +49,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
     - RecaptchaInterop (~> 100.0)
+  - FirebaseAuthInterop (10.29.0)
   - FirebaseCore (10.28.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
@@ -71,6 +79,15 @@ PODS:
     - FirebaseFirestoreGRPCCPPBinary (= 1.62.1)
     - leveldb-library (~> 1.22)
     - nanopb (< 2.30911.0, >= 2.30908.0)
+  - FirebaseFunctions (10.28.0):
+    - FirebaseAppCheckInterop (~> 10.10)
+    - FirebaseAuthInterop (~> 10.25)
+    - FirebaseCore (~> 10.0)
+    - FirebaseCoreExtension (~> 10.0)
+    - FirebaseMessagingInterop (~> 10.0)
+    - FirebaseSharedSwift (~> 10.0)
+    - GTMSessionFetcher/Core (< 4.0, >= 2.1)
+  - FirebaseMessagingInterop (10.29.0)
   - FirebaseSharedSwift (10.28.0)
   - Flutter (1.0.0)
   - GoogleUtilities/AppDelegateSwizzler (7.13.3):
@@ -112,6 +129,7 @@ PODS:
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - firebase_app_check (from `.symlinks/plugins/firebase_app_check/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -126,6 +144,7 @@ SPEC REPOS:
     - FirebaseAppCheck
     - FirebaseAppCheckInterop
     - FirebaseAuth
+    - FirebaseAuthInterop
     - FirebaseCore
     - FirebaseCoreExtension
     - FirebaseCoreInternal
@@ -135,6 +154,8 @@ SPEC REPOS:
     - FirebaseFirestoreGRPCCoreBinary
     - FirebaseFirestoreGRPCCPPBinary
     - FirebaseFirestoreInternalBinary
+    - FirebaseFunctions
+    - FirebaseMessagingInterop
     - FirebaseSharedSwift
     - GoogleUtilities
     - GTMSessionFetcher
@@ -146,6 +167,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
+  cloud_functions:
+    :path: ".symlinks/plugins/cloud_functions/ios"
   firebase_app_check:
     :path: ".symlinks/plugins/firebase_app_check/ios"
   firebase_auth:
@@ -168,6 +191,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AppCheckCore: 9feb4300caa596a36416cde10674dc5bec1e022e
   cloud_firestore: 71f0ffec97ce23c51587ec906f4cc470c518bc70
+  cloud_functions: 34dc5ab80e0c1ff256d9adb2747a8105fe7ea2b3
   Firebase: 5121c624121af81cbc81df3bda414b3c28c4f3c3
   firebase_app_check: d26a83129d5bfe1fd66b9c2f3432fb3df486eee5
   firebase_auth: e778ee89483b86fe4200d1f8e9a1c52aa5fb64a8
@@ -175,6 +199,7 @@ SPEC CHECKSUMS:
   FirebaseAppCheck: 94bcff56401058ba9f7343fff086380ffb987ed6
   FirebaseAppCheckInterop: 5315f40293191bfec04b2cfab0215760e441540a
   FirebaseAuth: 3d872fbbfc4223edeb72769e488f325fa8b0a4a9
+  FirebaseAuthInterop: 17db81e9b198afb0f95ce48c133825727eed55d3
   FirebaseCore: 857dc1c6dd1255675047404d8466f7dfaac5d779
   FirebaseCoreExtension: f63147b723e2a700fe0f34ec6fb7f358d6fe83e0
   FirebaseCoreInternal: 58d07f1362fddeb0feb6a857d1d1d1c5e558e698
@@ -185,6 +210,8 @@ SPEC CHECKSUMS:
   FirebaseFirestoreGRPCCoreBinary: 1243fc6604a52912694635f891916976924931ed
   FirebaseFirestoreGRPCCPPBinary: e447b3a7c060c0abfc4e2c9f6fb53bf7635ded66
   FirebaseFirestoreInternalBinary: 403a5475a2f8481606864443f2ab3d592b67fe4d
+  FirebaseFunctions: 09e37af8b314949e90aba43765a6380119caed30
+  FirebaseMessagingInterop: afa5a4da1d615d109cf9fcf37479af96f6c3623a
   FirebaseSharedSwift: 48de4aec81a6b79bb30404e5e6db43ea74848fed
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15

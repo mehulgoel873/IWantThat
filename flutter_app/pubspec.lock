@@ -65,6 +65,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.3"
+  cloud_functions:
+    dependency: "direct main"
+    description:
+      name: cloud_functions
+      sha256: "09c991cc923fdf5d723efa3400613b81e0b1d0ca37a84ac32413e24ebb8760ad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
+  cloud_functions_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_functions_platform_interface
+      sha256: f144b7e9fe616c28661876cd3be254c5f07b88566f86bf7aa704f0d5b67b0e12
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.32"
+  cloud_functions_web:
+    dependency: transitive
+    description:
+      name: cloud_functions_web
+      sha256: "875511448efad684dc37203fce17b3cc5c52c647edd041c2e950c42154fe5d7f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.10"
   collection:
     dependency: transitive
     description:
@@ -154,7 +178,7 @@ packages:
     source: hosted
     version: "0.1.2+11"
   firebase_auth:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_auth
       sha256: a41b56878fa6aef3ea52962329b47eee333672d4b0ecc406e071b9fc729f242c

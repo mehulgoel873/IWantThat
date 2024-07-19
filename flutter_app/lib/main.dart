@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'artist.dart';
 
@@ -87,6 +89,18 @@ class MyAppState extends ChangeNotifier {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    try {
+      final userCredential = await FirebaseAuth.instance.signInAnonymously();
+      print("Signed in with temporary account.");
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "operation-not-allowed":
+          print("Anonymous auth hasn't been enabled for this project.");
+          break;
+        default:
+          print("Unknown error.");
+      }
+    }
     final model =
         FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
     print("Initialized Firebase App");
@@ -95,28 +109,53 @@ class MyAppState extends ChangeNotifier {
     final prompt = TextPart(
         "Describe what is in the photo from the perspective of someone trying to commission it from an artist.");
 
+    final response;
     if (_selectedImage == null) {
       print("Select a file before generating the text!");
+      return;
     } else {
       final image = await _selectedImage!.readAsBytes();
       final imagePart = DataPart('image/jpeg', image);
-      final response = await model.generateContent([
+      response = await model.generateContent([
         Content.multi([prompt, imagePart])
       ]);
-      print(response.text);
     }
+
+    final result = await FirebaseFunctions.instance
+        .httpsCallable('ext-firestore-vector-search-queryCallable')
+        .call(
+      {
+        "query": response.text,
+      },
+    );
+    print(response.text);
+    print("\n");
+    print(result.data);
 
     await Firebase.initializeApp();
     final db = FirebaseFirestore.instance;
 
     final artistsDB = db.collection("artists");
-    final ref =
-        db.collection("artists").doc("5EFflj5Ede2xdmUtmzcR").withConverter(
-              fromFirestore: Artist.fromFirestore,
-              toFirestore: (Artist city, _) => city.toFirestore(),
-            );
-    final docSnap = await ref.get();
+    var ref = db.collection("artists").doc(result.data["ids"][0]).withConverter(
+          fromFirestore: Artist.fromFirestore,
+          toFirestore: (Artist city, _) => city.toFirestore(),
+        );
+    var docSnap = await ref.get();
+    artists[0] = docSnap.data()!; //TODO: Fix null check here
+
+    ref = db.collection("artists").doc(result.data["ids"][1]).withConverter(
+          fromFirestore: Artist.fromFirestore,
+          toFirestore: (Artist city, _) => city.toFirestore(),
+        );
+    docSnap = await ref.get();
     artists[1] = docSnap.data()!; //TODO: Fix null check here
+
+    ref = db.collection("artists").doc(result.data["ids"][2]).withConverter(
+          fromFirestore: Artist.fromFirestore,
+          toFirestore: (Artist city, _) => city.toFirestore(),
+        );
+    docSnap = await ref.get();
+    artists[2] = docSnap.data()!; //TODO: Fix null check here
   }
 }
 
@@ -135,10 +174,8 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (appState.selectedIndex) {
       case 0:
         page = PhotoPage();
-        break;
       case 1:
         page = Placeholder();
-        break;
       default:
         throw UnimplementedError('no widget for selected index');
     }
