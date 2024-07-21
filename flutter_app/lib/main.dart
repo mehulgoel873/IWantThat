@@ -195,16 +195,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    Widget page;
-    switch (appState.selectedIndex) {
-      case 0:
-        page = PhotoPage();
-      case 1:
-        page = Placeholder();
-      default:
-        throw UnimplementedError('no widget for selected index');
-    }
+    Widget page = PhotoPage();
     return Scaffold(
       body: SafeArea(child: page),
     );
