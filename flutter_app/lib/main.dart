@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,13 +10,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'artist.dart';
 import 'profile.dart';
+import 'auth_gate.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -29,13 +31,13 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        title: 'I Want That',
         theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
             scaffoldBackgroundColor:
                 ColorScheme.fromSeed(seedColor: Colors.green).primaryContainer),
-        home: MyHomePage(),
+        home: AuthGate(),
       ),
     );
   }
@@ -54,21 +56,18 @@ class MyAppState extends ChangeNotifier {
   }
 
   Future<void> _initialize() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    try {
-      final userCredential = await FirebaseAuth.instance.signInAnonymously();
-      print("Signed in with temporary account.");
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case "operation-not-allowed":
-          print("Anonymous auth hasn't been enabled for this project.");
-          break;
-        default:
-          print("Unknown error.");
-      }
-    }
+    // try {
+    //   final userCredential = await FirebaseAuth.instance.signInAnonymously();
+    //   print("Signed in with temporary account.");
+    // } on FirebaseAuthException catch (e) {
+    //   switch (e.code) {
+    //     case "operation-not-allowed":
+    //       print("Anonymous auth hasn't been enabled for this project.");
+    //       break;
+    //     default:
+    //       print("Unknown error.");
+    //   }
+    // }
     model =
         FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
 
@@ -332,11 +331,13 @@ class BigCard extends StatelessWidget {
 
     return Card(
       color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Text(
-          text,
-          style: style,
+      child: Align(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Text(
+            text,
+            style: style,
+          ),
         ),
       ),
     );
