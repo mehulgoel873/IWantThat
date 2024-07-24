@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,28 +52,68 @@ class MyAppState extends ChangeNotifier {
   var model;
   var db;
   var artistsDB;
+  String? userDoc = null;
+  bool? artist = null;
 
   MyAppState() {
     _initialize();
   }
 
   Future<void> _initialize() async {
-    // try {
-    //   final userCredential = await FirebaseAuth.instance.signInAnonymously();
-    //   print("Signed in with temporary account.");
-    // } on FirebaseAuthException catch (e) {
-    //   switch (e.code) {
-    //     case "operation-not-allowed":
-    //       print("Anonymous auth hasn't been enabled for this project.");
-    //       break;
-    //     default:
-    //       print("Unknown error.");
-    //   }
-    // }
     model =
         FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
 
     print("Initialized Firebase App");
+
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+        notifyListeners();
+      } else {
+        artist = null;
+        print("EMAIL: " + user.email!);
+        int i = 0;
+        db = FirebaseFirestore.instance;
+        db
+            .collection("users")
+            .where("email", isEqualTo: user.email!)
+            .get()
+            .then(
+          (querySnapshot) {
+            for (var docSnapshot in querySnapshot.docs) {
+              print("FOUND USER");
+              i++;
+              userDoc = docSnapshot.id;
+            }
+            if (i == 0) {
+              print("added user with appropriate email");
+              db.collection("users").add({"email": user.email!}).then(
+                  (documentSnapshot) => userDoc = documentSnapshot.id);
+            } else if (i == 1) {
+              print("Logged in with email: " +
+                  user.email! +
+                  ",  Document ID: " +
+                  userDoc!);
+              final docRef = db.collection("users").doc(userDoc!);
+              docRef.get().then(
+                (DocumentSnapshot doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  artist = data["artist"];
+                  print(artist);
+                  notifyListeners();
+                },
+                onError: (e) => print("Error getting document: $e"),
+              );
+            } else {
+              print("ERROR: FOUND DUPLICATE QUERIES FOR THIS EMAIL");
+            }
+          },
+          onError: (e) => print("Error completing: $e"),
+        );
+
+        notifyListeners();
+      }
+    });
   }
 
   var artists = <Artist>[
@@ -147,8 +189,6 @@ class MyAppState extends ChangeNotifier {
     print('Artist queries executed in ${stopwatch.elapsed}');
 
     print(result.data["ids"][0]);
-    await Firebase.initializeApp();
-    db = FirebaseFirestore.instance;
     artistsDB = db.collection("artists");
     DocumentReference<Artist> ref = db
         .collection("artists")
@@ -182,6 +222,15 @@ class MyAppState extends ChangeNotifier {
     print(artists);
     return true;
   }
+
+  void setArtist(bool val) {
+    artist = val;
+    db
+        .collection("users")
+        .doc(userDoc!)
+        .set({"artist": val}, SetOptions(merge: true));
+    notifyListeners();
+  }
 }
 
 // ...
@@ -194,7 +243,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    Widget page = PhotoPage();
+    var appState = context.watch<MyAppState>();
+    var page;
+    if (appState.artist == true)
+      page = ProfilePage();
+    else
+      page = PhotoPage();
     return Scaffold(
       body: SafeArea(child: page),
     );
@@ -212,6 +266,55 @@ class PhotoPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BigCard(text: "I Want THAT!"),
+          appState.artist == null
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                      color: theme.colorScheme.secondary,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Text("Are you an artist?",
+                                style: theme.textTheme.headlineSmall!.copyWith(
+                                    color: theme.colorScheme.onSecondary)),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: theme.colorScheme.error,
+                                      foregroundColor:
+                                          theme.colorScheme.onError,
+                                    ),
+                                    onPressed: () {
+                                      print("This user is not an artist");
+                                      appState.setArtist(false);
+                                    },
+                                    icon: Icon(Icons.close_outlined),
+                                    label: Text('NO'),
+                                  ),
+                                  SizedBox(width: 15),
+                                  ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          theme.colorScheme.primary,
+                                      foregroundColor:
+                                          theme.colorScheme.onPrimary,
+                                    ),
+                                    onPressed: () {
+                                      print("This user is an artist");
+                                      appState.setArtist(true);
+                                    },
+                                    icon: Icon(Icons.check_outlined),
+                                    label: Text('YES'),
+                                  ),
+                                ])
+                          ],
+                        ),
+                      )),
+                )
+              : SizedBox(),
           Padding(
             padding: const EdgeInsets.only(
                 left: 30.0, right: 30.0, top: 15.0, bottom: 5.0),
@@ -308,6 +411,7 @@ class PhotoPage extends StatelessWidget {
               ],
             ),
           ),
+          SignOutButton(),
         ],
       ),
     );

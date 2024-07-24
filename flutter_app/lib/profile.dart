@@ -1,3 +1,4 @@
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -13,13 +14,7 @@ class ProfilePage extends StatelessWidget {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton.icon(
-                  icon: Icon(Icons.home_outlined),
-                  label: Text('Home'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+                SignOutButton(),
               ]),
         ),
       ),

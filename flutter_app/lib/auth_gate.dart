@@ -41,8 +41,8 @@ class AuthGate extends StatelessWidget {
             },
           );
         }
-        print(snapshot.data);
-        print("Authenticated??");
+        // print(snapshot.data);
+        print("Authenticated");
         return MyHomePage();
       },
     );
