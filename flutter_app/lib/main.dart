@@ -314,15 +314,14 @@ class PhotoPage extends StatelessWidget {
                         ),
                       )),
                 )
-              : SizedBox(),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: 30.0, right: 30.0, top: 15.0, bottom: 5.0),
-            child: Text(
-                "Upload or take an image of an object you want comissioned, or explain it in text! Using this information, this app will figure out the best artists to make this for you.",
-                style: theme.textTheme.bodyLarge!
-                    .copyWith(color: theme.colorScheme.onSurface)),
-          ),
+              : Padding(
+                  padding: const EdgeInsets.only(
+                      left: 30.0, right: 30.0, top: 15.0, bottom: 5.0),
+                  child: Text(
+                      "Upload or take an image of an object you want comissioned, or explain it in text! Using this information, this app will figure out the best artists to make this for you.",
+                      style: theme.textTheme.bodyLarge!
+                          .copyWith(color: theme.colorScheme.onSurface)),
+                ),
           SizedBox(height: 10),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -396,20 +395,11 @@ class PhotoPage extends StatelessWidget {
                   icon: Icon(Icons.person_search_outlined),
                   label: Text("Find an Artist"),
                 ),
-                SizedBox(width: 10),
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    print("Profile Page Pressed");
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ProfilePage()));
-                  },
-                  icon: Icon(Icons.brush_outlined),
-                  label: Text("Update Artist Profile"),
-                ),
               ],
             ),
+          ),
+          SizedBox(
+            height: 10,
           ),
           SignOutButton(),
         ],
