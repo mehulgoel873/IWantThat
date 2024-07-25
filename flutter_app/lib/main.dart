@@ -52,16 +52,15 @@ class MyAppState extends ChangeNotifier {
   var model;
   var db;
   var artistsDB;
-  String? userDoc = null;
-  bool? artist = null;
+  String? userDoc;
+  bool? artist;
 
   MyAppState() {
     _initialize();
   }
 
   Future<void> _initialize() async {
-    model =
-        FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
+    model = FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
 
     print("Initialized Firebase App");
 
@@ -74,11 +73,7 @@ class MyAppState extends ChangeNotifier {
         print("EMAIL: " + user.email!);
         int i = 0;
         db = FirebaseFirestore.instance;
-        db
-            .collection("users")
-            .where("email", isEqualTo: user.email!)
-            .get()
-            .then(
+        db.collection("users").where("email", isEqualTo: user.email!).get().then(
           (querySnapshot) {
             for (var docSnapshot in querySnapshot.docs) {
               print("FOUND USER");
@@ -140,7 +135,7 @@ class MyAppState extends ChangeNotifier {
   void pickImageFromCamera() async {
     final returnedImage = await ImagePicker().pickImage(
         source: ImageSource.gallery); //TODO: Change ImageSource to Camera
-    if (returnedImage != null) _selectedImage = File(returnedImage!.path);
+    if (returnedImage != null) _selectedImage = File(returnedImage.path);
     print("Selected Image Done!");
     notifyListeners();
   }
@@ -148,7 +143,7 @@ class MyAppState extends ChangeNotifier {
   void pickImageFromLibrary() async {
     final returnedImage = await ImagePicker().pickImage(
         source: ImageSource.gallery); //TODO: Change ImageSource to Camera
-    if (returnedImage != null) _selectedImage = File(returnedImage!.path);
+    if (returnedImage != null) _selectedImage = File(returnedImage.path);
     print("Selected Image Done!");
     notifyListeners();
   }
@@ -229,6 +224,34 @@ class MyAppState extends ChangeNotifier {
         .collection("users")
         .doc(userDoc!)
         .set({"artist": val}, SetOptions(merge: true));
+    notifyListeners();
+  }
+
+  Future<void> updateArtist(Artist artist) async {
+    if (userDoc == null) return;
+
+    Map<String, dynamic> artistData = {
+      "Job Description": artist.description,
+      "email": artist.email,
+      "name": artist.name,
+      "phone": artist.phone,
+      "twitter": artist.twitter,
+      "status": {
+        "firestore-vector-search": {
+          "completeTime": FieldValue.serverTimestamp(),
+          "createTime": FieldValue.serverTimestamp(),
+          "startTime": FieldValue.serverTimestamp(),
+          "state": "COMPLETED",
+          "updateTime": FieldValue.serverTimestamp(),
+        }
+      },
+    };
+
+    DocumentReference ref = FirebaseFirestore.instance
+        .collection("artists")
+        .doc(userDoc);
+
+    await ref.set(artistData, SetOptions(merge: true));
     notifyListeners();
   }
 }
