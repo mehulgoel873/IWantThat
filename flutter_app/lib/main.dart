@@ -17,6 +17,9 @@ import 'artist.dart';
 import 'profile.dart';
 import 'auth_gate.dart';
 
+var buttonStyle = ElevatedButton.styleFrom(
+    foregroundColor: Color(0xFF084A0E), backgroundColor: Color(0xFF57CC99));
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -30,15 +33,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Map<int, Color> _blueMap = {
+      50: Color(0xFF49BFC1),
+      100: Color(0xFF3EB4B6),
+      200: Color(0xFF38A3A5),
+      300: Color(0xFF2D719F),
+      400: Color(0xFF28668F),
+      500: Color(0xFF22577A),
+      600: Color(0xFF1F4F6F),
+      700: Color(0xFF07374B),
+      800: Color(0xFF041F2A),
+      900: Color(0xFF031C25),
+    };
+
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
         title: 'I Want That',
         theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-            scaffoldBackgroundColor:
-                ColorScheme.fromSeed(seedColor: Colors.green).primaryContainer),
+          useMaterial3: true,
+          // colorScheme: ColorScheme.fromSeed(
+          // seedColor: Colors.green, brightness: Brightness.dark),
+          colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: MaterialColor(0xFF22577A, _blueMap),
+            accentColor: Color(0xFF57CC99),
+            errorColor: Color(0xFFD83030),
+            cardColor: Color(0xFF041F2A),
+            backgroundColor: Colors.black,
+            brightness: Brightness.dark,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(style: buttonStyle),
+        ),
         home: AuthGate(),
       ),
     );
@@ -60,7 +85,8 @@ class MyAppState extends ChangeNotifier {
   }
 
   Future<void> _initialize() async {
-    model = FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
+    model =
+        FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
 
     print("Initialized Firebase App");
 
@@ -73,7 +99,11 @@ class MyAppState extends ChangeNotifier {
         print("EMAIL: " + user.email!);
         int i = 0;
         db = FirebaseFirestore.instance;
-        db.collection("users").where("email", isEqualTo: user.email!).get().then(
+        db
+            .collection("users")
+            .where("email", isEqualTo: user.email!)
+            .get()
+            .then(
           (querySnapshot) {
             for (var docSnapshot in querySnapshot.docs) {
               print("FOUND USER");
@@ -247,9 +277,8 @@ class MyAppState extends ChangeNotifier {
       },
     };
 
-    DocumentReference ref = FirebaseFirestore.instance
-        .collection("artists")
-        .doc(userDoc);
+    DocumentReference ref =
+        FirebaseFirestore.instance.collection("artists").doc(userDoc);
 
     await ref.set(artistData, SetOptions(merge: true));
     notifyListeners();
@@ -293,14 +322,14 @@ class PhotoPage extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
-                      color: theme.colorScheme.secondary,
+                      color: theme.colorScheme.primary,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
                             Text("Are you an artist?",
                                 style: theme.textTheme.headlineSmall!.copyWith(
-                                    color: theme.colorScheme.onSecondary)),
+                                    color: theme.colorScheme.onPrimary)),
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -320,10 +349,9 @@ class PhotoPage extends StatelessWidget {
                                   SizedBox(width: 15),
                                   ElevatedButton.icon(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          theme.colorScheme.primary,
+                                      backgroundColor: Color(0xFF084A0E),
                                       foregroundColor:
-                                          theme.colorScheme.onPrimary,
+                                          theme.colorScheme.onSurface,
                                     ),
                                     onPressed: () {
                                       print("This user is an artist");
@@ -378,12 +406,12 @@ class PhotoPage extends StatelessWidget {
               : Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Card(
-                    color: theme.colorScheme.primary,
+                    color: theme.colorScheme.surface,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text("Please select an image ",
                           style: theme.textTheme.bodyLarge!
-                              .copyWith(color: theme.colorScheme.onPrimary)),
+                              .copyWith(color: theme.colorScheme.onSurface)),
                     ),
                   ),
                 ),
@@ -443,11 +471,11 @@ class BigCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
+      color: theme.colorScheme.onSurface,
     );
 
     return Card(
-      color: theme.colorScheme.primary,
+      color: theme.colorScheme.surface,
       child: Align(
         child: Padding(
           padding: const EdgeInsets.all(20.0),

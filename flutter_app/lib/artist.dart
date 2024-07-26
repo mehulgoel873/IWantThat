@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'main.dart';
 
 class Artist {
   final String? name;
@@ -56,7 +57,7 @@ class ArtistCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
-        color: theme.colorScheme.primary,
+        color: theme.colorScheme.surface,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
@@ -91,7 +92,8 @@ class ArtistCard extends StatelessWidget {
                                 alignment: Alignment.centerLeft,
                                 child: Icon(Icons.phone_iphone_outlined)),
                             label: Text(artist.phone!,
-                                style: theme.textTheme.bodySmall)),
+                                style: theme.textTheme.bodySmall!
+                                    .copyWith(color: Color(0xFF084A0E)))),
                       ),
                       SizedBox(
                         width: double.infinity,
@@ -103,7 +105,8 @@ class ArtistCard extends StatelessWidget {
                                 alignment: Alignment.centerLeft,
                                 child: Icon(Icons.mail_outlined)),
                             label: Text(artist.email!,
-                                style: theme.textTheme.bodySmall)),
+                                style: theme.textTheme.bodySmall!
+                                    .copyWith(color: Color(0xFF084A0E)))),
                       ),
                       SizedBox(
                         width: double.infinity,
@@ -116,7 +119,8 @@ class ArtistCard extends StatelessWidget {
                                 child: Icon(FontAwesomeIcons.twitter)),
                             label: Text(
                                 artist.twitter!, //TODO: FIX ALL NULL CHECKS
-                                style: theme.textTheme.bodySmall)),
+                                style: theme.textTheme.bodySmall!
+                                    .copyWith(color: Color(0xFF084A0E)))),
                       ),
                     ],
                   )),
