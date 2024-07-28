@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'artist.dart';
-import 'main.dart';  // Import to access MyAppState
+import 'main.dart';
+import 'auth_gate.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -33,6 +34,26 @@ class ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
+
+    if (appState.artist == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Update Artist Profile'),
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (nameController.text.isEmpty) {
+      nameController.text = appState.artist!.name ?? '';
+      descriptionController.text = appState.artist!.description ?? '';
+      phoneController.text = appState.artist!.phone ?? '';
+      emailController.text = appState.artist!.email ?? '';
+      twitterController.text = appState.artist!.twitter ?? '';
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Update Artist Profile'),
@@ -130,6 +151,11 @@ class ProfilePageState extends State<ProfilePage> {
                 ElevatedButton(
                   onPressed: () {
                     FirebaseAuth.instance.signOut();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => AuthGate()),
+                      (Route<dynamic> route) => false,
+                    );
                   },
                   child: const Text('Sign Out'),
                 ),

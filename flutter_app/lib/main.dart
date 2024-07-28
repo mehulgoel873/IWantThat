@@ -8,14 +8,13 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
-
 import 'artist.dart';
 import 'profile.dart';
 import 'auth_gate.dart';
+import 'artist_info_page.dart';
 
 var buttonStyle = ElevatedButton.styleFrom(
     foregroundColor: Color(0xFF084A0E), backgroundColor: Color(0xFF57CC99));
@@ -54,7 +53,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           // colorScheme: ColorScheme.fromSeed(
           // seedColor: Colors.green, brightness: Brightness.dark),
-          colorScheme: ColorScheme.fromSwatch(
+                    colorScheme: ColorScheme.fromSwatch(
             primarySwatch: MaterialColor(0xFF22577A, _blueMap),
             accentColor: Color(0xFF57CC99),
             errorColor: Color(0xFFD83030),
@@ -78,7 +77,7 @@ class MyAppState extends ChangeNotifier {
   var db;
   var artistsDB;
   String? userDoc;
-  bool? artist;
+  Artist? artist;
 
   MyAppState() {
     _initialize();
@@ -88,7 +87,7 @@ class MyAppState extends ChangeNotifier {
     model =
         FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
 
-    print("Initialized Firebase App");
+        print("Initialized Firebase App");
 
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
@@ -97,7 +96,6 @@ class MyAppState extends ChangeNotifier {
       } else {
         artist = null;
         print("EMAIL: " + user.email!);
-        int i = 0;
         db = FirebaseFirestore.instance;
         db
             .collection("users")
@@ -105,13 +103,14 @@ class MyAppState extends ChangeNotifier {
             .get()
             .then(
           (querySnapshot) {
+            int i = 0;
             for (var docSnapshot in querySnapshot.docs) {
               print("FOUND USER");
               i++;
               userDoc = docSnapshot.id;
             }
             if (i == 0) {
-              print("added user with appropriate email");
+               print("added user with appropriate email");
               db.collection("users").add({"email": user.email!}).then(
                   (documentSnapshot) => userDoc = documentSnapshot.id);
             } else if (i == 1) {
@@ -123,13 +122,16 @@ class MyAppState extends ChangeNotifier {
               docRef.get().then(
                 (DocumentSnapshot doc) {
                   final data = doc.data() as Map<String, dynamic>;
-                  artist = data["artist"];
-                  print(artist);
+                  bool isArtist = data["artist"];
+                  if (isArtist) {
+                    fetchArtistInfo();
+                  }
                   notifyListeners();
                 },
                 onError: (e) => print("Error getting document: $e"),
               );
-            } else {
+            }
+            else {
               print("ERROR: FOUND DUPLICATE QUERIES FOR THIS EMAIL");
             }
           },
@@ -214,6 +216,7 @@ class MyAppState extends ChangeNotifier {
     print('Artist queries executed in ${stopwatch.elapsed}');
 
     print(result.data["ids"][0]);
+
     artistsDB = db.collection("artists");
     DocumentReference<Artist> ref = db
         .collection("artists")
@@ -223,7 +226,7 @@ class MyAppState extends ChangeNotifier {
           toFirestore: (Artist artisan, SetOptions? _) => artisan.toFirestore(),
         );
     var docSnap = await ref.get();
-    artists[0] = docSnap.data()!; //TODO: Fix null check here
+     artists[0] = docSnap.data()!; //TODO: Fix null check here
 
     ref = db
         .collection("artists")
@@ -233,7 +236,7 @@ class MyAppState extends ChangeNotifier {
           toFirestore: (Artist artisan, _) => artisan.toFirestore(),
         );
     docSnap = await ref.get();
-    artists[1] = docSnap.data()!; //TODO: Fix null check here
+     artists[1] = docSnap.data()!; //TODO: Fix null check here
 
     ref = db
         .collection("artists")
@@ -249,7 +252,7 @@ class MyAppState extends ChangeNotifier {
   }
 
   void setArtist(bool val) {
-    artist = val;
+    artist = val ? Artist() : null;
     db
         .collection("users")
         .doc(userDoc!)
@@ -266,26 +269,35 @@ class MyAppState extends ChangeNotifier {
       "name": artist.name,
       "phone": artist.phone,
       "twitter": artist.twitter,
-      "status": {
-        "firestore-vector-search": {
-          "completeTime": FieldValue.serverTimestamp(),
-          "createTime": FieldValue.serverTimestamp(),
-          "startTime": FieldValue.serverTimestamp(),
-          "state": "COMPLETED",
-          "updateTime": FieldValue.serverTimestamp(),
-        }
-      },
     };
 
     DocumentReference ref =
         FirebaseFirestore.instance.collection("artists").doc(userDoc);
 
     await ref.set(artistData, SetOptions(merge: true));
+    this.artist = artist;
+    notifyListeners();
+  }
+
+  Future<void> fetchArtistInfo() async {
+    if (userDoc == null) return;
+
+    DocumentReference ref =
+        FirebaseFirestore.instance.collection("artists").doc(userDoc);
+
+    DocumentSnapshot snapshot = await ref.get();
+    if (snapshot.exists) {
+      artist = Artist(
+        name: snapshot['name'],
+        description: snapshot['Job Description'],
+        phone: snapshot['phone'],
+        email: snapshot['email'],
+        twitter: snapshot['twitter'],
+      );
+    }
     notifyListeners();
   }
 }
-
-// ...
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -297,12 +309,26 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var page;
-    if (appState.artist == true)
-      page = ProfilePage();
+    
+    if (appState.artist != null)
+      page = ArtistInfoPage();
     else
       page = PhotoPage();
     return Scaffold(
       body: SafeArea(child: page),
+      floatingActionButton: appState.artist != null
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ArtistInfoPage(),
+                  ),
+                );
+              },
+              child: Icon(Icons.person),
+            )
+          : null,
     );
   }
 }
