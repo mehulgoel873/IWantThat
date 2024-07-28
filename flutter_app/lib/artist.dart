@@ -8,6 +8,7 @@ class Artist {
   final String? phone;
   final String? email;
   final String? twitter;
+  String? profileImageUrl; // Add this field
 
   Artist({
     this.name,
@@ -15,6 +16,7 @@ class Artist {
     this.phone,
     this.email,
     this.twitter,
+    this.profileImageUrl,
   });
 
   factory Artist.fromFirestore(
@@ -28,6 +30,7 @@ class Artist {
       phone: data?['phone'],
       email: data?['email'],
       twitter: data?['twitter'],
+      profileImageUrl: data?['profileImageUrl'], // Add this line
     );
   }
 
@@ -38,9 +41,11 @@ class Artist {
       if (phone != null) "phone": phone,
       if (email != null) "email": email,
       if (twitter != null) "twitter": twitter,
+      if (profileImageUrl != null) "profileImageUrl": profileImageUrl, // Add this line
     };
   }
 }
+
 
 class ArtistCard extends StatelessWidget {
   const ArtistCard({

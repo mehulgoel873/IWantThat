@@ -8,6 +8,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
@@ -141,6 +142,24 @@ class MyAppState extends ChangeNotifier {
         notifyListeners();
       }
     });
+  }
+
+  Future<void> uploadProfileImage() async {
+    if (_selectedImage == null) return;
+
+    try {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('profile_images')
+          .child('$userDoc.jpg');
+      await storageRef.putFile(_selectedImage!);
+      final imageUrl = await storageRef.getDownloadURL();
+      db.collection('artists').doc(userDoc).update({'profileImageUrl': imageUrl});
+      artist?.profileImageUrl = imageUrl;
+      notifyListeners();
+    } catch (e) {
+      print('Error uploading profile image: $e');
+    }
   }
 
   var artists = <Artist>[
@@ -280,23 +299,24 @@ class MyAppState extends ChangeNotifier {
   }
 
   Future<void> fetchArtistInfo() async {
-    if (userDoc == null) return;
+  if (userDoc == null) return;
 
-    DocumentReference ref =
-        FirebaseFirestore.instance.collection("artists").doc(userDoc);
+  DocumentReference ref =
+      FirebaseFirestore.instance.collection("artists").doc(userDoc);
 
-    DocumentSnapshot snapshot = await ref.get();
-    if (snapshot.exists) {
-      artist = Artist(
-        name: snapshot['name'],
-        description: snapshot['Job Description'],
-        phone: snapshot['phone'],
-        email: snapshot['email'],
-        twitter: snapshot['twitter'],
-      );
-    }
-    notifyListeners();
+  DocumentSnapshot snapshot = await ref.get();
+  if (snapshot.exists) {
+    artist = Artist(
+      name: snapshot['name'],
+      description: snapshot['Job Description'],
+      phone: snapshot['phone'],
+      email: snapshot['email'],
+      twitter: snapshot['twitter'],
+      profileImageUrl: snapshot['profileImageUrl'],
+    );
   }
+  notifyListeners();
+}
 }
 
 class MyHomePage extends StatefulWidget {

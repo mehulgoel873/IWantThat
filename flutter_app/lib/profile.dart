@@ -65,11 +65,9 @@ class ProfilePageState extends State<ProfilePage> {
             key: formKey,
             child: ListView(
               children: [
-                TextFormField(
+                _buildTextField(
                   controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                  ),
+                  label: 'Name',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the name';
@@ -78,11 +76,11 @@ class ProfilePageState extends State<ProfilePage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                _buildTextField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                  ),
+                  label: 'Description',
+                  maxLength: 170,
+                  maxLines: 5,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the description';
@@ -91,11 +89,9 @@ class ProfilePageState extends State<ProfilePage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                _buildTextField(
                   controller: phoneController,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone',
-                  ),
+                  label: 'Phone',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the phone number';
@@ -104,11 +100,9 @@ class ProfilePageState extends State<ProfilePage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                _buildTextField(
                   controller: emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                  ),
+                  label: 'Email',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the email';
@@ -117,11 +111,9 @@ class ProfilePageState extends State<ProfilePage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                _buildTextField(
                   controller: twitterController,
-                  decoration: const InputDecoration(
-                    labelText: 'Twitter',
-                  ),
+                  label: 'Twitter',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the Twitter handle';
@@ -164,6 +156,25 @@ class ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    int? maxLength,
+    int maxLines = 1,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(),
+      ),
+      maxLength: maxLength,
+      maxLines: maxLines,
+      validator: validator,
     );
   }
 }
