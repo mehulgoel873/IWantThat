@@ -16,6 +16,7 @@ import 'artist.dart';
 import 'profile.dart';
 import 'auth_gate.dart';
 import 'artist_info_page.dart';
+// import 'package:firebase_app_check/firebase_app_check.dart';
 
 var buttonStyle = ElevatedButton.styleFrom(
     foregroundColor: Color(0xFF084A0E), backgroundColor: Color(0xFF57CC99));
@@ -25,6 +26,24 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // await FirebaseAppCheck.instance.activate(
+  //   // You can also use a `ReCaptchaEnterpriseProvider` provider instance as an
+  //   // argument for `webProvider`
+  //   webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+  //   // Default provider for Android is the Play Integrity provider. You can use the "AndroidProvider" enum to choose
+  //   // your preferred provider. Choose from:
+  //   // 1. Debug provider
+  //   // 2. Safety Net provider
+  //   // 3. Play Integrity provider
+  //   androidProvider: AndroidProvider.debug,
+  //   // Default provider for iOS/macOS is the Device Check provider. You can use the "AppleProvider" enum to choose
+  //   // your preferred provider. Choose from:
+  //   // 1. Debug provider
+  //   // 2. Device Check provider
+  //   // 3. App Attest provider
+  //   // 4. App Attest provider with fallback to Device Check provider (App Attest provider is only available on iOS 14.0+, macOS 14.0+)
+  //   appleProvider: AppleProvider.appAttest,
+  // );
   runApp(MyApp());
 }
 
@@ -54,7 +73,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           // colorScheme: ColorScheme.fromSeed(
           // seedColor: Colors.green, brightness: Brightness.dark),
-                    colorScheme: ColorScheme.fromSwatch(
+          colorScheme: ColorScheme.fromSwatch(
             primarySwatch: MaterialColor(0xFF22577A, _blueMap),
             accentColor: Color(0xFF57CC99),
             errorColor: Color(0xFFD83030),
@@ -79,6 +98,7 @@ class MyAppState extends ChangeNotifier {
   var artistsDB;
   String? userDoc;
   Artist? artist;
+  bool? isArtist;
 
   MyAppState() {
     _initialize();
@@ -88,7 +108,7 @@ class MyAppState extends ChangeNotifier {
     model =
         FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-flash');
 
-        print("Initialized Firebase App");
+    print("Initialized Firebase App");
 
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
@@ -111,9 +131,11 @@ class MyAppState extends ChangeNotifier {
               userDoc = docSnapshot.id;
             }
             if (i == 0) {
-               print("added user with appropriate email");
+              print("added user with appropriate email");
               db.collection("users").add({"email": user.email!}).then(
                   (documentSnapshot) => userDoc = documentSnapshot.id);
+              isArtist = null;
+              notifyListeners();
             } else if (i == 1) {
               print("Logged in with email: " +
                   user.email! +
@@ -123,16 +145,16 @@ class MyAppState extends ChangeNotifier {
               docRef.get().then(
                 (DocumentSnapshot doc) {
                   final data = doc.data() as Map<String, dynamic>;
-                  bool isArtist = data["artist"];
-                  if (isArtist) {
+                  isArtist = data["artist"];
+                  notifyListeners();
+
+                  if (isArtist != null && isArtist!) {
                     fetchArtistInfo();
                   }
-                  notifyListeners();
                 },
                 onError: (e) => print("Error getting document: $e"),
               );
-            }
-            else {
+            } else {
               print("ERROR: FOUND DUPLICATE QUERIES FOR THIS EMAIL");
             }
           },
@@ -154,7 +176,10 @@ class MyAppState extends ChangeNotifier {
           .child('$userDoc.jpg');
       await storageRef.putFile(_selectedImage!);
       final imageUrl = await storageRef.getDownloadURL();
-      db.collection('artists').doc(userDoc).update({'profileImageUrl': imageUrl});
+      db
+          .collection('artists')
+          .doc(userDoc)
+          .update({'profileImageUrl': imageUrl});
       artist?.profileImageUrl = imageUrl;
       notifyListeners();
     } catch (e) {
@@ -245,7 +270,7 @@ class MyAppState extends ChangeNotifier {
           toFirestore: (Artist artisan, SetOptions? _) => artisan.toFirestore(),
         );
     var docSnap = await ref.get();
-     artists[0] = docSnap.data()!; //TODO: Fix null check here
+    artists[0] = docSnap.data()!; //TODO: Fix null check here
 
     ref = db
         .collection("artists")
@@ -255,7 +280,7 @@ class MyAppState extends ChangeNotifier {
           toFirestore: (Artist artisan, _) => artisan.toFirestore(),
         );
     docSnap = await ref.get();
-     artists[1] = docSnap.data()!; //TODO: Fix null check here
+    artists[1] = docSnap.data()!; //TODO: Fix null check here
 
     ref = db
         .collection("artists")
@@ -272,6 +297,7 @@ class MyAppState extends ChangeNotifier {
 
   void setArtist(bool val) {
     artist = val ? Artist() : null;
+    isArtist = val;
     db
         .collection("users")
         .doc(userDoc!)
@@ -299,24 +325,24 @@ class MyAppState extends ChangeNotifier {
   }
 
   Future<void> fetchArtistInfo() async {
-  if (userDoc == null) return;
+    if (userDoc == null) return;
 
-  DocumentReference ref =
-      FirebaseFirestore.instance.collection("artists").doc(userDoc);
+    DocumentReference ref =
+        FirebaseFirestore.instance.collection("artists").doc(userDoc);
 
-  DocumentSnapshot snapshot = await ref.get();
-  if (snapshot.exists) {
-    artist = Artist(
-      name: snapshot['name'],
-      description: snapshot['Job Description'],
-      phone: snapshot['phone'],
-      email: snapshot['email'],
-      twitter: snapshot['twitter'],
-      profileImageUrl: snapshot['profileImageUrl'],
-    );
+    DocumentSnapshot snapshot = await ref.get();
+    if (snapshot.exists) {
+      artist = Artist(
+        name: snapshot['name'],
+        description: snapshot['Job Description'],
+        phone: snapshot['phone'],
+        email: snapshot['email'],
+        twitter: snapshot['twitter'],
+        profileImageUrl: snapshot['profileImageUrl'],
+      );
+    }
+    notifyListeners();
   }
-  notifyListeners();
-}
 }
 
 class MyHomePage extends StatefulWidget {
@@ -329,7 +355,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var page;
-    
+
     if (appState.artist != null)
       page = ArtistInfoPage();
     else
@@ -364,7 +390,7 @@ class PhotoPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BigCard(text: "I Want THAT!"),
-          appState.artist == null
+          appState.isArtist == null
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
