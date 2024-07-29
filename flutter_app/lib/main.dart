@@ -20,7 +20,7 @@ import 'artist_info_page.dart';
 
 var buttonForegroundColor = Color(0xFF102820);
 var elevatedStyle = ElevatedButton.styleFrom(
-    foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF4C6444));
+    foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF66865B));
 // var buttonForegroundColor = Color(0xFF084A0E);
 // var elevatedStyle = ElevatedButton.styleFrom(
 //     foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF57CC99));
@@ -86,8 +86,6 @@ class MyApp extends StatelessWidget {
             // ),
             colorScheme: ColorScheme.fromSeed(
                 seedColor: Color(0xFF8A6240),
-                primary: Color(0xFF4D2D18),
-                secondary: Color(0xFF4C6444),
                 surface: Color(0xFF8A6240),
                 onSurface: Color(0xFF3E2514),
                 error: Color(0xFFE85F5C)),
@@ -409,7 +407,7 @@ class PhotoPage extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Card(
-                        color: theme.colorScheme.primary,
+                        color: theme.colorScheme.tertiary,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
@@ -417,7 +415,7 @@ class PhotoPage extends StatelessWidget {
                               Text("Are you an artist?",
                                   style: theme.textTheme.headlineSmall!
                                       .copyWith(
-                                          color: theme.colorScheme.onPrimary)),
+                                          color: theme.colorScheme.onTertiary)),
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -437,11 +435,6 @@ class PhotoPage extends StatelessWidget {
                                     ),
                                     SizedBox(width: 15),
                                     ElevatedButton.icon(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFF084A0E),
-                                        foregroundColor:
-                                            theme.colorScheme.onSurface,
-                                      ),
                                       onPressed: () {
                                         print("This user is an artist");
                                         appState.setArtist(true);
@@ -488,9 +481,7 @@ class PhotoPage extends StatelessWidget {
             appState._selectedImage != null
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                        height: 250.0,
-                        child: Image.file(appState._selectedImage!)),
+                    child: Image.file(appState._selectedImage!),
                   )
                 : Padding(
                     padding: const EdgeInsets.all(15.0),
