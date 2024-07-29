@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Artist {
@@ -41,11 +42,11 @@ class Artist {
       if (phone != null) "phone": phone,
       if (email != null) "email": email,
       if (twitter != null) "twitter": twitter,
-      if (profileImageUrl != null) "profileImageUrl": profileImageUrl, // Add this line
+      if (profileImageUrl != null)
+        "profileImageUrl": profileImageUrl, // Add this line
     };
   }
 }
-
 
 class ArtistCard extends StatelessWidget {
   const ArtistCard({
@@ -97,7 +98,7 @@ class ArtistCard extends StatelessWidget {
                                 child: Icon(Icons.phone_iphone_outlined)),
                             label: Text(artist.phone!,
                                 style: theme.textTheme.bodySmall!
-                                    .copyWith(color: Color(0xFF084A0E)))),
+                                    .copyWith(color: buttonForegroundColor))),
                       ),
                       SizedBox(
                         width: double.infinity,
@@ -110,7 +111,7 @@ class ArtistCard extends StatelessWidget {
                                 child: Icon(Icons.mail_outlined)),
                             label: Text(artist.email!,
                                 style: theme.textTheme.bodySmall!
-                                    .copyWith(color: Color(0xFF084A0E)))),
+                                    .copyWith(color: buttonForegroundColor))),
                       ),
                       SizedBox(
                         width: double.infinity,
@@ -124,7 +125,7 @@ class ArtistCard extends StatelessWidget {
                             label: Text(
                                 artist.twitter!, //TODO: FIX ALL NULL CHECKS
                                 style: theme.textTheme.bodySmall!
-                                    .copyWith(color: Color(0xFF084A0E)))),
+                                    .copyWith(color: buttonForegroundColor))),
                       ),
                     ],
                   )),

@@ -18,8 +18,13 @@ import 'auth_gate.dart';
 import 'artist_info_page.dart';
 // import 'package:firebase_app_check/firebase_app_check.dart';
 
-var buttonStyle = ElevatedButton.styleFrom(
-    foregroundColor: Color(0xFF084A0E), backgroundColor: Color(0xFF57CC99));
+var buttonForegroundColor = Color(0xFF102820);
+var elevatedStyle = ElevatedButton.styleFrom(
+    foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF4C6444));
+// var buttonForegroundColor = Color(0xFF084A0E);
+// var elevatedStyle = ElevatedButton.styleFrom(
+//     foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF57CC99));
+var iconStyle = ElevatedButton.styleFrom(foregroundColor: Color(0xFF3E2514));
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,19 +75,24 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'I Want That',
         theme: ThemeData(
-          useMaterial3: true,
-          // colorScheme: ColorScheme.fromSeed(
-          // seedColor: Colors.green, brightness: Brightness.dark),
-          colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: MaterialColor(0xFF22577A, _blueMap),
-            accentColor: Color(0xFF57CC99),
-            errorColor: Color(0xFFD83030),
-            cardColor: Color(0xFF041F2A),
-            backgroundColor: Colors.black,
-            brightness: Brightness.dark,
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(style: buttonStyle),
-        ),
+            useMaterial3: true,
+            // colorScheme: ColorScheme.fromSwatch(
+            //   primarySwatch: MaterialColor(0xFF22577A, _blueMap),
+            //   accentColor: Color(0xFF57CC99),
+            //   errorColor: Color(0xFFD83030),
+            //   cardColor: Color(0xFF041F2A),
+            //   backgroundColor: Colors.black,
+            //   brightness: Brightness.dark,
+            // ),
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Color(0xFF8A6240),
+                primary: Color(0xFF4D2D18),
+                secondary: Color(0xFF4C6444),
+                surface: Color(0xFF8A6240),
+                onSurface: Color(0xFF3E2514),
+                error: Color(0xFFE85F5C)),
+            elevatedButtonTheme: ElevatedButtonThemeData(style: elevatedStyle),
+            iconButtonTheme: IconButtonThemeData(style: iconStyle)),
         home: AuthGate(),
       ),
     );
@@ -210,7 +220,7 @@ class MyAppState extends ChangeNotifier {
 
   void pickImageFromCamera() async {
     final returnedImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery); //TODO: Change ImageSource to Camera
+        source: ImageSource.camera); //TODO: Change ImageSource to Camera
     if (returnedImage != null) _selectedImage = File(returnedImage.path);
     print("Selected Image Done!");
     notifyListeners();
@@ -314,6 +324,7 @@ class MyAppState extends ChangeNotifier {
       "name": artist.name,
       "phone": artist.phone,
       "twitter": artist.twitter,
+      "profileImageUrl": "",
     };
 
     DocumentReference ref =
@@ -326,6 +337,7 @@ class MyAppState extends ChangeNotifier {
 
   Future<void> fetchArtistInfo() async {
     if (userDoc == null) return;
+    print("LOGGED AN ARTIST IN");
 
     DocumentReference ref =
         FirebaseFirestore.instance.collection("artists").doc(userDoc);
@@ -340,6 +352,8 @@ class MyAppState extends ChangeNotifier {
         twitter: snapshot['twitter'],
         profileImageUrl: snapshot['profileImageUrl'],
       );
+    } else {
+      artist = artists[0];
     }
     notifyListeners();
   }
