@@ -386,146 +386,150 @@ class PhotoPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BigCard(text: "I Want THAT!"),
-          appState.isArtist == null
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                      color: theme.colorScheme.primary,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Text("Are you an artist?",
-                                style: theme.textTheme.headlineSmall!.copyWith(
-                                    color: theme.colorScheme.onPrimary)),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton.icon(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: theme.colorScheme.error,
-                                      foregroundColor:
-                                          theme.colorScheme.onError,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BigCard(text: "I Want THAT!"),
+            appState.isArtist == null
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                        color: theme.colorScheme.primary,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Text("Are you an artist?",
+                                  style: theme.textTheme.headlineSmall!
+                                      .copyWith(
+                                          color: theme.colorScheme.onPrimary)),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            theme.colorScheme.error,
+                                        foregroundColor:
+                                            theme.colorScheme.onError,
+                                      ),
+                                      onPressed: () {
+                                        print("This user is not an artist");
+                                        appState.setArtist(false);
+                                      },
+                                      icon: Icon(Icons.close_outlined),
+                                      label: Text('NO'),
                                     ),
-                                    onPressed: () {
-                                      print("This user is not an artist");
-                                      appState.setArtist(false);
-                                    },
-                                    icon: Icon(Icons.close_outlined),
-                                    label: Text('NO'),
-                                  ),
-                                  SizedBox(width: 15),
-                                  ElevatedButton.icon(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFF084A0E),
-                                      foregroundColor:
-                                          theme.colorScheme.onSurface,
+                                    SizedBox(width: 15),
+                                    ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF084A0E),
+                                        foregroundColor:
+                                            theme.colorScheme.onSurface,
+                                      ),
+                                      onPressed: () {
+                                        print("This user is an artist");
+                                        appState.setArtist(true);
+                                      },
+                                      icon: Icon(Icons.check_outlined),
+                                      label: Text('YES'),
                                     ),
-                                    onPressed: () {
-                                      print("This user is an artist");
-                                      appState.setArtist(true);
-                                    },
-                                    icon: Icon(Icons.check_outlined),
-                                    label: Text('YES'),
-                                  ),
-                                ])
-                          ],
-                        ),
-                      )),
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(
-                      left: 30.0, right: 30.0, top: 15.0, bottom: 5.0),
-                  child: Text(
-                      "Upload or take an image of an object you want comissioned, or explain it in text! Using this information, this app will figure out the best artists to make this for you.",
-                      style: theme.textTheme.bodyLarge!
-                          .copyWith(color: theme.colorScheme.onSurface)),
-                ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  print("Capture Image Button Pressed Library");
-                  appState.pickImageFromLibrary();
-                },
-                icon: Icon(Icons.photo_album_outlined),
-                label: Text('Upload a photo'),
-              ),
-              SizedBox(width: 20),
-              ElevatedButton.icon(
-                onPressed: () {
-                  print("Capture Image Button Pressed Library");
-                  appState.pickImageFromCamera();
-                },
-                icon: Icon(Icons.photo_camera_outlined),
-                label: Text('Take a photo'),
-              ),
-            ],
-          ),
-          appState._selectedImage != null
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                      height: 250.0,
-                      child: Image.file(appState._selectedImage!)),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Card(
-                    color: theme.colorScheme.surface,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text("Please select an image ",
-                          style: theme.textTheme.bodyLarge!
-                              .copyWith(color: theme.colorScheme.onSurface)),
-                    ),
+                                  ])
+                            ],
+                          ),
+                        )),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(
+                        left: 30.0, right: 30.0, top: 15.0, bottom: 5.0),
+                    child: Text(
+                        "Upload or take an image of an object you want comissioned, or explain it in text! Using this information, this app will figure out the best artists to make this for you.",
+                        style: theme.textTheme.bodyLarge!
+                            .copyWith(color: theme.colorScheme.onSurface)),
                   ),
-                ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: TextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Enter information about the comission"),
-              onChanged: (text) {
-                appState.contextualClues = text;
-              },
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            SizedBox(height: 10),
+            Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () async {
-                    print("ARTIST button pressed");
-                    bool check = await appState.startGenAI();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ArtistPage()));
+                  onPressed: () {
+                    print("Capture Image Button Pressed Library");
+                    appState.pickImageFromLibrary();
                   },
-                  icon: Icon(Icons.person_search_outlined),
-                  label: Text("Find an Artist"),
+                  icon: Icon(Icons.photo_album_outlined),
+                  label: Text('Upload a photo'),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    print("Capture Image Button Pressed Library");
+                    appState.pickImageFromCamera();
+                  },
+                  icon: Icon(Icons.photo_camera_outlined),
+                  label: Text('Take a photo'),
                 ),
               ],
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          SignOutButton(),
-        ],
+            appState._selectedImage != null
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        height: 250.0,
+                        child: Image.file(appState._selectedImage!)),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Card(
+                      color: theme.colorScheme.surface,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text("Please select an image ",
+                            style: theme.textTheme.bodyLarge!
+                                .copyWith(color: theme.colorScheme.onSurface)),
+                      ),
+                    ),
+                  ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter information about the comission"),
+                onChanged: (text) {
+                  appState.contextualClues = text;
+                },
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      print("ARTIST button pressed");
+                      bool check = await appState.startGenAI();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ArtistPage()));
+                    },
+                    icon: Icon(Icons.person_search_outlined),
+                    label: Text("Find an Artist"),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SignOutButton(),
+          ],
+        ),
       ),
     );
   }
@@ -572,20 +576,31 @@ class ArtistPage extends StatelessWidget {
       body: SafeArea(
         child: Align(
           alignment: Alignment.center,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  icon: Icon(Icons.home_outlined),
-                  label: Text('Home'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ArtistCard(artist: appState.artists[0]),
-                ArtistCard(artist: appState.artists[1]),
-                ArtistCard(artist: appState.artists[2]),
-              ]),
+          child: SingleChildScrollView(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton.icon(
+                    icon: Icon(Icons.home_outlined),
+                    label: Text('Home'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  ArtistCard(artist: appState.artists[0]),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  ArtistCard(artist: appState.artists[1]),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  ArtistCard(artist: appState.artists[2]),
+                ]),
+          ),
         ),
       ),
     );
