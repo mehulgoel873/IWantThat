@@ -21,35 +21,25 @@ a {
   font-style: normal;
 }
 
-#orange {
-  color: var(--orange);
+#emerald-light {
+  color: var(--emerald);
 }
 
 :root {
-  --c-grey-100: #f4f6f8;
-  --c-grey-200: #e3e3e3;
-  --c-grey-300: #b2b2b2;
-  --c-grey-400: #7b7b7b;
-  --c-grey-500: #3d3d3d;
+  --navy-blue-light: #2d719f;
+  --navy-blue: #22577A;
+  /*filter: brightness(0) saturate(100%) invert(29%) sepia(50%) saturate(620%) hue-rotate(161deg) brightness(93%) contrast(95%); */
 
-  --c-blue-500: #688afd;
-
-  --navy-blue-light: #81b3d3;
-  --navy-blue: #5889a8;
-
-  --background: #32373b;
+  --background: #000000;
   --offwhite: #DEE1E3;
   /*filter: invert(100%) sepia(1%) saturate(4960%) hue-rotate(173deg) brightness(89%) contrast(101%); */
 
-  --orange-light: #ff9e44;
-  /*filter: invert(60%) sepia(64%) saturate(494%) hue-rotate(342deg) brightness(102%) contrast(101%);*/
-  --orange: #ff7f2d;
+  --emerald-light: #57CC99;
+  /*filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);*/
+  --emerald: #38A3A5;
   /* filter: invert(55%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%); */
 
-  --light-green: #d7e8ba;
-  --green: #a1c181;
-  --dark-green: #5A6954;
-  --dark-green-transparent: rgba(91, 105, 84, 0.35);
+  --dark-blue: #041F2A;
 }
 
 ::-webkit-scrollbar {
@@ -104,7 +94,7 @@ footer p {
   margin-left: auto;
   margin-right: auto;
   font-weight: 700;
-  color: var(--orange);
+  color: var(--emerald-light);
   font-size: 1.25rem;
 }
 

@@ -71,22 +71,22 @@
 }
 
 .features .timeline-item:hover .card {
-	border-color: var(--orange);
-	box-shadow: 0 4px 4px 0 var(--orange-light);
-	color: var(--orange-light);
+	border-color: var(--emerald);
+	box-shadow: 0 4px 4px 0 var(--emerald-light);
+	color: var(--emerald);
 }
 
 .features .timeline-item:hover .card .button {
-	border-color: var(--orange-light);
-	color: var(--orange-light);
+	border-color: var(--emerald-light);
+	color: var(--emerald-light);
 }
 
-.features .timeline-item:hover .card .button .hover-orange {
-	filter: invert(60%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%);
+.features .timeline-item:hover .card .button .hover-emerald {
+	filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);
 }
 
 .features .timeline-item:hover .icon {
-	filter: invert(60%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%);
+	filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);
 }
 
 .features .timeline-item-icon {
@@ -107,7 +107,7 @@
 .features .timeline-item-icon img {
 	width: 35px;
 	height: 35px;
-	filter: invert(54%) sepia(17%) saturate(958%) hue-rotate(160deg) brightness(90%) contrast(91%);
+	filter: brightness(0) saturate(100%) invert(29%) sepia(50%) saturate(620%) hue-rotate(161deg) brightness(93%) contrast(95%);
 	/* https://isotropic.co/tool/hex-color-to-css-filter/  */
 }
 
@@ -184,21 +184,21 @@
 	width: 1.5rem;
 	height: 1.5rem;
 	margin: 0px 16px 0px 8px;
-	filter: invert(54%) sepia(17%) saturate(958%) hue-rotate(160deg) brightness(90%) contrast(91%);
+	filter: brightness(0) saturate(100%) invert(29%) sepia(50%) saturate(620%) hue-rotate(161deg) brightness(93%) contrast(95%);
 }
 
 .features .button:hover {
-	border-color: var(--orange) !important;
-	color: var(--orange) !important;
+	border-color: var(--emerald) !important;
+	color: var(--emerald) !important;
 	font-weight: 700;
 }
 
-.features .button:hover .hover-orange {
-	filter: invert(55%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%) !important;
+.features .button:hover .hover-emerald {
+	filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);
 }
 
 .features .button:hover .icon {
-	filter: invert(55%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%);
+	filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);
 }
 
 @media (max-width: 1200px) {

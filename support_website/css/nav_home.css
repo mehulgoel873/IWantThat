@@ -14,7 +14,7 @@ nav {
     display: flex;
     height: 5rem;
     width: 100%;
-    background-color: var(--dark-green);
+    background-color: var(--dark-blue);
     align-items: center;
     font-weight: bold;
     margin-bottom: 5rem;
@@ -71,7 +71,7 @@ nav .nav-links a:hover::before {
 nav .nav-links a:last-child {
     padding: 0.5vh;
     border-radius: 1.5vh;
-    color: var(--orange);
+    color: var(--emerald);
 }
 
 nav .nav-links a:last-child::before {
@@ -79,7 +79,7 @@ nav .nav-links a:last-child::before {
     display: block;
     width: 100%;
     height: 3px;
-    background-color: var(--orange-light);
+    background-color: var(--emerald-light);
     position: absolute;
     bottom: 0.5vh;
     left: 0;
@@ -89,7 +89,7 @@ nav .nav-links a:last-child::before {
 
 nav .nav-links a:last-child:hover {
     text-decoration: none;
-    color: var(--orange-light);
+    color: var(--emerald-light);
 }
 
 nav .nav-links a:last-child:hover::before {
@@ -181,7 +181,7 @@ nav .nav-links a:last-child:hover::before {
     left: 0;
     right: 0;
     background-color: transparent;
-    border-left: 3px solid var(--orange);
+    border-left: 3px solid var(--emerald-light);
 }
 
 .welcome-section .nav-links {
