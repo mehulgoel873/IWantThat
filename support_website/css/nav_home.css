@@ -109,9 +109,9 @@ nav .nav-links a:last-child:hover::before {
 
 .image-wrapper {
     display: inline-block;
-    margin-right: 10vw;
+    margin-right: 2vw;
     vertical-align: middle;
-    height: 50vh;
+    height: 60vh;
 }
 
 .image-wrapper img {
@@ -133,55 +133,23 @@ nav .nav-links a:last-child:hover::before {
 .text-wrapper h1 {
     margin-top: 0;
     margin-bottom: 0;
-    font-size: 10rem;
+    font-size: 9rem;
     line-height: 1;
 }
 
 .text-wrapper h3 {
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 2vh;
     font-size: 6rem;
     line-height: 1;
     font-family: 'Righteous', cursive;
 }
 
 .text-wrapper p {
-    font-size: 3.75vh;
+    font-size: 2rem;
     margin-top: 2vh;
     margin-bottom: 0;
     line-height: 1;
-}
-
-.typing-container .text {
-    font-size: 2rem;
-}
-
-
-.typing-container {
-    position: relative;
-    width: max-content;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.typing-container .text_hide {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: var(--background);
-    height: 2.25rem;
-}
-
-.typing-container .text_cursor {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: transparent;
-    border-left: 3px solid var(--emerald-light);
 }
 
 .welcome-section .nav-links {
