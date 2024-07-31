@@ -18,7 +18,6 @@
 .features {
 	line-height: 1.5;
 	min-height: 100vh;
-	font-family: "Outfit", sans-serif;
 }
 
 
@@ -31,6 +30,8 @@
 
 .features .section_header h1 {
 	color: var(--navy-blue);
+	font-family: "Amatic SC", sans-serif;
+	font-weight: 900;
 }
 
 .features a {
@@ -51,7 +52,7 @@
 	flex-direction: column;
 	padding: 32px 0 32px 32px;
 	border-left: 4px solid var(--navy-blue);
-	font-size: 1.125rem;
+	font-size: 1.25rem;
 	margin-bottom: -3rem;
 }
 
@@ -121,13 +122,15 @@
 	width: 100%;
 }
 
+
+
 .features .card h1 {
 	padding: 0;
 	margin: 0;
 
+	font-family: "Amatic SC", sans-serif;
 	font-weight: 900;
-	font-size: 2rem;
-	font-family: "Source Code Pro", monospace;
+	font-size: 2.5rem;
 	font-optical-sizing: auto;
 	font-style: normal;
 }
@@ -138,7 +141,6 @@
 
 	font-weight: 700;
 	font-size: 1.25rem;
-	font-family: "Source Code Pro", monospace;
 	font-optical-sizing: auto;
 	font-style: italic;
 }
@@ -176,7 +178,6 @@
 
 	font-weight: 400;
 	font-size: 1.25rem;
-	font-family: "Source Code Pro", monospace;
 	font-optical-sizing: auto;
 }
 

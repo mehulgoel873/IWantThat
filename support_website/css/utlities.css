@@ -3,11 +3,11 @@ html {
 }
 
 h1 {
-  font-family: 'Righteous', cursive;
+  font-family: "Caveat", cursive;
 }
 
 h3 {
-  font-family: "Source Code Pro", monospace;
+  font-family: "Amatic SC", sans-serif;
   font-optical-sizing: auto;
   font-weight: 900;
   font-style: normal;
@@ -15,7 +15,7 @@ h3 {
 
 p,
 a {
-  font-family: "Source Code Pro", monospace;
+  font-family: "Nanum Gothic Coding", monospace;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
@@ -86,7 +86,11 @@ a {
 }
 
 footer {
+  margin-top: 5vh;
   padding: 2vh 0vh;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 footer p {
@@ -96,6 +100,16 @@ footer p {
   font-weight: 700;
   color: var(--emerald-light);
   font-size: 1.25rem;
+}
+
+footer .row {
+  display: flex;
+  flex-direction: row;
+}
+
+footer .row p {
+  padding: 0 2vw;
+  margin: 0;
 }
 
 @media (max-width: 1200px) {
