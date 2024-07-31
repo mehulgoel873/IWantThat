@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap');
+
+#projects {
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+}
+
+#projects * {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    outline: 0;
+}
+
+#projects *,
+*:after,
+*:before {
+    box-sizing: border-box;
+}
+
+#projects html {
+    position: relative;
+    overflow: hidden;
+    font-size: 16px;
+}
+
+#projects body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: #f1f3f6;
+}
+
+#projects .section_header h1 {
+    padding-top: 5rem;
+    color: var(--green);
+}
+
+#projects .card-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#projects .card {
+    flex: 0 1 calc(50% - 1em);
+    margin: 1em 0;
+    border-radius: 1.5rem;
+    background: var(--dark-green-transparent);
+    border: 7px solid var(--green);
+    padding: 1.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+#projects .card-img-holder {
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+
+#projects .card-img-holder img {
+    width: 100%;
+    height: auto;
+    max-height: 15rem;
+    object-fit: cover;
+    border-radius: 1.5rem;
+}
+
+#projects .blog-title {
+    color: var(--green);
+    padding: 0.5rem 0 0 0;
+    font-size: 2.25rem;
+    font-weight: 900;
+}
+
+#projects .description {
+    padding: 1rem 0;
+    color: var(--offwhite);
+
+    font-weight: 600;
+    font-size: 1 rem;
+    font-weight: 500;
+    font-optical-sizing: normal;
+}
+
+
+#projects .options {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    gap: 2%;
+}
+
+#projects .btn {
+    font-size: 1rem;
+    font-weight: 600;
+
+
+    padding: .5rem 1rem;
+    border: 3px solid var(--offwhite);
+    color: var(--offwhite);
+    border-radius: 12px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.0);
+    text-decoration: none;
+}
+
+#projects .btn:hover {
+    font-weight: 900;
+
+    border-color: var(--orange);
+    color: var(--orange);
+}
+
+#projects ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2%;
+    list-style-type: none;
+    font-family: "Source Code Pro", monospace;
+}
+
+#projects li {
+    padding: 0.3rem;
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    margin: 0.25rem 0;
+    color: var(--green);
+
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+#projects li:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+    font-weight: 900;
+}

@@ -1,0 +1,236 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+
+
+#experience {
+	scroll-behavior: smooth;
+	margin-left: auto;
+	margin-right: auto;
+	width: 85%;
+}
+
+/* Some basic CSS overrides */
+.experience {
+	line-height: 1.5;
+	min-height: 100vh;
+	font-family: "Outfit", sans-serif;
+}
+
+
+.experience button,
+.experience input,
+.experience select,
+.experience textarea {
+	font: inherit;
+}
+
+.experience .section_header h1 {
+	color: var(--navy-blue);
+}
+
+.experience a {
+	color: inherit;
+}
+
+.experience img {
+	display: block;
+	max-width: 100%;
+}
+
+/* End basic CSS override */
+
+.experience .timeline {
+	margin-left: auto;
+	margin-right: auto;
+	display: flex;
+	flex-direction: column;
+	padding: 32px 0 32px 32px;
+	border-left: 4px solid var(--navy-blue);
+	font-size: 1.125rem;
+	margin-bottom: -3rem;
+}
+
+
+.experience .timeline-item {
+	display: flex;
+	gap: 24px;
+	width: 100%;
+}
+
+.experience .timeline-item+* {
+	margin-top: 24px;
+}
+
+.experience .timeline-item+.extra-space {
+	margin-top: 48px;
+}
+
+.experience .timeline-item:hover .card {
+	border-color: var(--orange);
+	box-shadow: 0 4px 4px 0 var(--orange-light);
+	color: var(--orange-light);
+}
+
+.experience .timeline-item:hover .card .button {
+	border-color: var(--orange-light);
+	color: var(--orange-light);
+}
+
+.experience .timeline-item:hover .card .button .hover-orange {
+	filter: invert(60%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%);
+}
+
+.experience .timeline-item:hover .icon {
+	filter: invert(60%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%);
+}
+
+.experience .timeline-item-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-left: -52px;
+	flex-shrink: 0;
+	overflow: hidden;
+	background-color: var(--background);
+	box-shadow: 0 0 0 8px var(--background);
+	margin-top: 24px;
+}
+
+.experience .timeline-item-icon img {
+	width: 35px;
+	height: 35px;
+	filter: invert(54%) sepia(17%) saturate(958%) hue-rotate(160deg) brightness(90%) contrast(91%);
+	/* https://isotropic.co/tool/hex-color-to-css-filter/  */
+}
+
+.experience .card {
+	color: var(--navy-blue-light);
+	border: 3px solid var(--navy-blue);
+	box-shadow: 0 4px 4px 0 var(--navy-blue-light);
+	border-radius: 6px;
+	padding: 16px;
+	font-weight: 600;
+	width: 100%;
+}
+
+.experience .card h1 {
+	padding: 0;
+	margin: 0;
+
+	font-weight: 900;
+	font-size: 2rem;
+	font-family: "Source Code Pro", monospace;
+	font-optical-sizing: auto;
+	font-style: normal;
+}
+
+.experience .card h2 {
+	padding: 0;
+	margin: 0;
+
+	font-weight: 700;
+	font-size: 1.25rem;
+	font-family: "Source Code Pro", monospace;
+	font-optical-sizing: auto;
+	font-style: italic;
+}
+
+.experience .card p {
+	margin-top: 4px;
+	color: var(--offwhite);
+}
+
+.experience .card .simple {
+	display: none;
+}
+
+.experience a {
+	color: var(--background);
+}
+
+.experience .button {
+	border: 0;
+	padding: 0;
+	display: inline-flex;
+	vertical-align: middle;
+	margin-right: 4px;
+	align-items: center;
+	justify-content: center;
+	height: max-content;
+	padding: 4px 12px;
+
+	border: 5px solid var(--navy-blue);
+	border-radius: 15px;
+	background-color: var(--background);
+	color: var(--navy-blue);
+	flex-shrink: 0;
+	cursor: pointer;
+
+	font-weight: 400;
+	font-size: 1.25rem;
+	font-family: "Source Code Pro", monospace;
+	font-optical-sizing: auto;
+}
+
+.experience .button img {
+	width: 1.5rem;
+	height: 1.5rem;
+	margin: 0px 16px 0px 8px;
+	filter: invert(54%) sepia(17%) saturate(958%) hue-rotate(160deg) brightness(90%) contrast(91%);
+}
+
+.experience .button:hover {
+	border-color: var(--orange) !important;
+	color: var(--orange) !important;
+	font-weight: 700;
+}
+
+.experience .button:hover .hover-orange {
+	filter: invert(55%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%) !important;
+}
+
+.experience .button:hover .icon {
+	filter: invert(55%) sepia(73%) saturate(1298%) hue-rotate(339deg) brightness(101%) contrast(102%);
+}
+
+@media (max-width: 1200px) {
+
+	.experience .timeline {
+		width: 95%;
+		max-width: 90%;
+	}
+
+	.experience .card h1 {
+		font-size: 2.4rem;
+	}
+
+	.experience .card h2 {
+		font-size: 1.75rem;
+	}
+
+	.experience .card .detailed {
+		display: none;
+	}
+
+	.experience .card .simple {
+		font-size: 0.9rem;
+		display: block;
+	}
+
+	.experience .button {
+		margin-top: 0.75rem;
+		font-size: 1.75rem;
+	}
+
+	.experience .button img {
+		display: none;
+	}
+}
