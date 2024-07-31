@@ -18,13 +18,13 @@ import 'auth_gate.dart';
 import 'artist_info_page.dart';
 // import 'package:firebase_app_check/firebase_app_check.dart';
 
-var buttonForegroundColor = Color(0xFF102820);
-var elevatedStyle = ElevatedButton.styleFrom(
-    foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF66865B));
-// var buttonForegroundColor = Color(0xFF084A0E);
+// var buttonForegroundColor = Color(0xFF102820);
 // var elevatedStyle = ElevatedButton.styleFrom(
-//     foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF57CC99));
-var iconStyle = ElevatedButton.styleFrom(foregroundColor: Color(0xFF3E2514));
+//     foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF66865B));
+var buttonForegroundColor = Color(0xFF084A0E);
+var elevatedStyle = ElevatedButton.styleFrom(
+    foregroundColor: buttonForegroundColor, backgroundColor: Color(0xFF57CC99));
+var iconStyle = ElevatedButton.styleFrom(foregroundColor: Color(0xFF22577A));
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,19 +76,19 @@ class MyApp extends StatelessWidget {
         title: 'I Want That',
         theme: ThemeData(
             useMaterial3: true,
-            // colorScheme: ColorScheme.fromSwatch(
-            //   primarySwatch: MaterialColor(0xFF22577A, _blueMap),
-            //   accentColor: Color(0xFF57CC99),
-            //   errorColor: Color(0xFFD83030),
-            //   cardColor: Color(0xFF041F2A),
-            //   backgroundColor: Colors.black,
-            //   brightness: Brightness.dark,
-            // ),
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: Color(0xFF8A6240),
-                surface: Color(0xFF8A6240),
-                onSurface: Color(0xFF3E2514),
-                error: Color(0xFFE85F5C)),
+            colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: MaterialColor(0xFF22577A, _blueMap),
+              accentColor: Color(0xFF57CC99),
+              errorColor: Color(0xFFD83030),
+              cardColor: Color(0xFF041F2A),
+              backgroundColor: Colors.black,
+              brightness: Brightness.dark,
+            ),
+            // colorScheme: ColorScheme.fromSeed(
+            //     seedColor: Color(0xFF8A6240),
+            //     surface: Color(0xFF8A6240),
+            //     onSurface: Color(0xFF3E2514),
+            //     error: Color(0xFFE85F5C)),
             elevatedButtonTheme: ElevatedButtonThemeData(style: elevatedStyle),
             iconButtonTheme: IconButtonThemeData(style: iconStyle)),
         home: AuthGate(),
