@@ -95,6 +95,7 @@ class MyAppState extends ChangeNotifier {
   var db;
   var artistsDB;
   String? userDoc;
+  String? artistDoc;
   Artist? artist;
   bool? isArtist;
 
@@ -147,6 +148,30 @@ class MyAppState extends ChangeNotifier {
                   notifyListeners();
 
                   if (isArtist != null && isArtist!) {
+                    print(isArtist);
+                    db
+                        .collection("artists")
+                        .where("userDoc", isEqualTo: userDoc!)
+                        .get()
+                        .then((querySnapshot) {
+                      int i = 0;
+                      for (var docSnapshot in querySnapshot.docs) {
+                        artistDoc = docSnapshot.id;
+                        i++;
+                      }
+                      if (i == 0) {
+                        db.collection("artists").add({
+                          "name": "",
+                          "Job Description": "",
+                          "phone": "",
+                          "email": user.email!,
+                          "twitter": "",
+                          "profileImageUrl": "",
+                          "userDoc": userDoc!,
+                        }).then((documentSnapshot) =>
+                            artistDoc = documentSnapshot.id);
+                      }
+                    });
                     fetchArtistInfo();
                   }
                 },
@@ -304,10 +329,22 @@ class MyAppState extends ChangeNotifier {
         .doc(userDoc!)
         .set({"artist": val}, SetOptions(merge: true));
     notifyListeners();
+    if (isArtist == true) {
+      db.collection("artists").add({
+        "name": "",
+        "Job Description": "",
+        "phone": "",
+        "email": "",
+        "twitter": "",
+        "profileImageUrl": "",
+        "userDoc": userDoc!,
+      }).then((documentSnapshot) => artistDoc = documentSnapshot.id);
+    }
+    notifyListeners();
   }
 
   Future<void> updateArtist(Artist artist) async {
-    if (userDoc == null) return;
+    if (artistDoc == null) return;
 
     Map<String, dynamic> artistData = {
       "Job Description": artist.description,
@@ -316,10 +353,11 @@ class MyAppState extends ChangeNotifier {
       "phone": artist.phone,
       "twitter": artist.twitter,
       "profileImageUrl": "",
+      "userDoc": userDoc!,
     };
 
     DocumentReference ref =
-        FirebaseFirestore.instance.collection("artists").doc(userDoc);
+        FirebaseFirestore.instance.collection("artists").doc(artistDoc);
 
     await ref.set(artistData, SetOptions(merge: true));
     this.artist = artist;
@@ -327,11 +365,11 @@ class MyAppState extends ChangeNotifier {
   }
 
   Future<void> fetchArtistInfo() async {
-    if (userDoc == null) return;
+    if (artistDoc == null) return;
     print("LOGGED AN ARTIST IN");
 
     DocumentReference ref =
-        FirebaseFirestore.instance.collection("artists").doc(userDoc);
+        FirebaseFirestore.instance.collection("artists").doc(artistDoc);
 
     DocumentSnapshot snapshot = await ref.get();
     if (snapshot.exists) {
