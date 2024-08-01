@@ -6,6 +6,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,6 +17,7 @@ import 'artist.dart';
 import 'profile.dart';
 import 'auth_gate.dart';
 import 'artist_info_page.dart';
+import 'googleFontText.dart';
 // import 'package:firebase_app_check/firebase_app_check.dart';
 
 // var buttonForegroundColor = Color(0xFF102820);
@@ -75,22 +77,28 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'I Want That',
         theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: MaterialColor(0xFF22577A, _blueMap),
-              accentColor: Color(0xFF57CC99),
-              errorColor: Color(0xFFD83030),
-              cardColor: Color(0xFF041F2A),
-              backgroundColor: Colors.black,
-              brightness: Brightness.dark,
-            ),
-            // colorScheme: ColorScheme.fromSeed(
-            //     seedColor: Color(0xFF8A6240),
-            //     surface: Color(0xFF8A6240),
-            //     onSurface: Color(0xFF3E2514),
-            //     error: Color(0xFFE85F5C)),
-            elevatedButtonTheme: ElevatedButtonThemeData(style: elevatedStyle),
-            iconButtonTheme: IconButtonThemeData(style: iconStyle)),
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: MaterialColor(0xFF22577A, _blueMap),
+            accentColor: Color(0xFF57CC99),
+            errorColor: Color(0xFFD83030),
+            cardColor: Color(0xFF041F2A),
+            backgroundColor: Colors.black,
+            brightness: Brightness.dark,
+          ),
+          // colorScheme: ColorScheme.fromSeed(
+          //     seedColor: Color(0xFF8A6240),
+          //     surface: Color(0xFF8A6240),
+          //     onSurface: Color(0xFF3E2514),
+          //     error: Color(0xFFE85F5C)),
+          elevatedButtonTheme: ElevatedButtonThemeData(style: elevatedStyle),
+          iconButtonTheme: IconButtonThemeData(style: iconStyle),
+          textTheme: TextThemeColor.nullFontColor(GoogleFonts.neuchaTextTheme(
+              Theme.of(context).textTheme.apply(fontSizeFactor: 1.2))),
+          primaryTextTheme: TextThemeColor.nullFontColor(
+              GoogleFonts.caveatTextTheme(
+                  Theme.of(context).textTheme.apply(fontSizeFactor: 1.2))),
+        ),
         home: AuthGate(),
       ),
     );
@@ -306,6 +314,9 @@ class MyAppState extends ChangeNotifier {
   void setArtist(bool val) {
     artist = val ? Artist() : null;
     isArtist = val;
+    while (userDoc == null) {
+      print("USER DOC NULL");
+    }
     db
         .collection("users")
         .doc(userDoc!)
@@ -366,6 +377,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    final theme = Theme.of(context);
     var page;
 
     if (appState.artist != null)
@@ -373,6 +385,13 @@ class _MyHomePageState extends State<MyHomePage> {
     else
       page = PhotoPage();
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        title: Text(
+          'I Want That',
+          style: GoogleFonts.caveat(textStyle: theme.textTheme.displayLarge!),
+        ),
+      ),
       body: SafeArea(child: page),
       floatingActionButton: appState.artist != null
           ? FloatingActionButton(
@@ -402,7 +421,6 @@ class PhotoPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            BigCard(text: "I Want THAT!"),
             appState.isArtist == null
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -551,7 +569,8 @@ class BigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(
+    final style =
+        GoogleFonts.caveat(textStyle: theme.textTheme.displayMedium).copyWith(
       color: theme.colorScheme.onSurface,
     );
 
@@ -559,7 +578,7 @@ class BigCard extends StatelessWidget {
       color: theme.colorScheme.surface,
       child: Align(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(15.0),
           child: Text(
             text,
             style: style,
@@ -578,6 +597,13 @@ class ArtistPage extends StatelessWidget {
     var appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        title: Text(
+          'Artists',
+          style: GoogleFonts.caveat(textStyle: theme.textTheme.displayLarge!),
+        ),
+      ),
       body: SafeArea(
         child: Align(
           alignment: Alignment.center,
@@ -585,13 +611,6 @@ class ArtistPage extends StatelessWidget {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton.icon(
-                    icon: Icon(Icons.home_outlined),
-                    label: Text('Home'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
                   SizedBox(
                     height: 15,
                   ),
@@ -604,6 +623,13 @@ class ArtistPage extends StatelessWidget {
                     height: 15,
                   ),
                   ArtistCard(artist: appState.artists[2]),
+                  ElevatedButton.icon(
+                    icon: Icon(Icons.home_outlined),
+                    label: Text('Home'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ]),
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart'; 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'main.dart';
 import 'auth_gate.dart';
 import 'profile.dart';
@@ -64,15 +64,17 @@ class ArtistInfoPage extends StatelessWidget {
             CircleAvatar(
               radius: 50,
               backgroundColor: theme.colorScheme.primary,
-              backgroundImage: artist.profileImageUrl != null ? NetworkImage(artist.profileImageUrl!) : null,
+              backgroundImage: artist.profileImageUrl != null
+                  ? NetworkImage(artist.profileImageUrl!)
+                  : null,
               child: artist.profileImageUrl == null
-                ? Text(
-                  artist.name != null ? artist.name![0] : 'A',
-                  style: theme.textTheme.headlineMedium!.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                  ),
-                )
-                : null,
+                  ? Text(
+                      artist.name != null ? artist.name![0] : 'A',
+                      style: theme.textTheme.headlineMedium!.copyWith(
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    )
+                  : null,
             ),
             const SizedBox(height: 16),
             Text(
@@ -125,9 +127,7 @@ class ArtistInfoPage extends StatelessWidget {
   }
 
   Widget _buildInfoRow(BuildContext context,
-      {required IconData icon,
-      required String label,
-      required String value}) {
+      {required IconData icon, required String label, required String value}) {
     final theme = Theme.of(context);
 
     return Padding(
@@ -136,7 +136,7 @@ class ArtistInfoPage extends StatelessWidget {
         children: [
           Icon(icon, color: theme.colorScheme.primary),
           const SizedBox(width: 16),
-          Expanded( 
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
