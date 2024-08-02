@@ -199,14 +199,34 @@ class MyAppState extends ChangeNotifier {
           .child('$userDoc.jpg');
       await storageRef.putFile(_selectedImage!);
       final imageUrl = await storageRef.getDownloadURL();
-      db
+      await db
           .collection('artists')
-          .doc(userDoc)
+          .doc(artistDoc)
           .update({'profileImageUrl': imageUrl});
       artist?.profileImageUrl = imageUrl;
       notifyListeners();
     } catch (e) {
       print('Error uploading profile image: $e');
+    }
+  }
+
+  void pickImageFromCamera() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.camera); //TODO: Change ImageSource to Camera
+    if (returnedImage != null) {
+      _selectedImage = File(returnedImage.path); 
+      print("Selected Image Done!");
+      notifyListeners();
+    }
+  }
+
+  void pickImageFromLibrary() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery); //TODO: Change ImageSource to Camera
+    if (returnedImage != null) {
+      _selectedImage = File(returnedImage.path);
+      print("Selected Image Done!");
+      notifyListeners();
     }
   }
 
@@ -230,22 +250,6 @@ class MyAppState extends ChangeNotifier {
         email: "iwantthat@gmail.com",
         twitter: "@beckie"),
   ];
-
-  void pickImageFromCamera() async {
-    final returnedImage = await ImagePicker().pickImage(
-        source: ImageSource.camera); //TODO: Change ImageSource to Camera
-    if (returnedImage != null) _selectedImage = File(returnedImage.path);
-    print("Selected Image Done!");
-    notifyListeners();
-  }
-
-  void pickImageFromLibrary() async {
-    final returnedImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery); //TODO: Change ImageSource to Camera
-    if (returnedImage != null) _selectedImage = File(returnedImage.path);
-    print("Selected Image Done!");
-    notifyListeners();
-  }
 
   Future startGenAI() async {
     // Provide a prompt that contains text
@@ -352,7 +356,7 @@ class MyAppState extends ChangeNotifier {
       "name": artist.name,
       "phone": artist.phone,
       "twitter": artist.twitter,
-      "profileImageUrl": "",
+      "profileImageUrl": artist.profileImageUrl,
       "userDoc": userDoc!,
     };
 

@@ -69,7 +69,7 @@ class ArtistInfoPage extends StatelessWidget {
                   : null,
               child: artist.profileImageUrl == null
                   ? Text(
-                      artist.name != null ? artist.name![0] : 'A',
+                      artist.name != null && artist.name!.isNotEmpty ? artist.name![0] : 'A',
                       style: theme.textTheme.headlineMedium!.copyWith(
                         color: theme.colorScheme.onPrimary,
                       ),

@@ -31,7 +31,7 @@ class Artist {
       phone: data?['phone'],
       email: data?['email'],
       twitter: data?['twitter'],
-      profileImageUrl: data?['profileImageUrl'], // Add this line
+      profileImageUrl: data?['profileImageUrl'],
     );
   }
 
@@ -42,8 +42,7 @@ class Artist {
       if (phone != null) "phone": phone,
       if (email != null) "email": email,
       if (twitter != null) "twitter": twitter,
-      if (profileImageUrl != null)
-        "profileImageUrl": profileImageUrl, // Add this line
+      if (profileImageUrl != null) "profileImageUrl": profileImageUrl, 
     };
   }
 }
@@ -62,75 +61,93 @@ class ArtistCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
-        color: theme.colorScheme.surface,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: _screen.width * 0.5,
-                child: Column(
-                  children: [
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(artist.name!,
-                            style: theme.textTheme.headlineMedium!
-                                .copyWith(color: theme.colorScheme.onPrimary))),
-                    Text(artist.description!,
-                        style: theme.textTheme.bodySmall!
-                            .copyWith(color: theme.colorScheme.onPrimary)),
-                  ],
-                ),
+      color: theme.colorScheme.surface,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: _screen.width * 0.5,
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      artist.name!,
+                      style: theme.textTheme.headlineMedium!
+                          .copyWith(color: theme.colorScheme.onPrimary),
+                    ),
+                  ),
+                  Text(
+                    artist.description!,
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: theme.colorScheme.onPrimary),
+                  ),
+                ],
               ),
-              Container(
-                  width: _screen.width * 0.4,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                            onPressed: () {
-                              print("Calling someone");
-                            },
-                            icon: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Icon(Icons.phone_iphone_outlined)),
-                            label: Text(artist.phone!,
-                                style: theme.textTheme.bodySmall!
-                                    .copyWith(color: buttonForegroundColor))),
+            ),
+            Container(
+              width: _screen.width * 0.4,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        print("Calling someone");
+                      },
+                      icon: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Icon(Icons.phone_iphone_outlined),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                            onPressed: () {
-                              print("Emailing Someone");
-                            },
-                            icon: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Icon(Icons.mail_outlined)),
-                            label: Text(artist.email!,
-                                style: theme.textTheme.bodySmall!
-                                    .copyWith(color: buttonForegroundColor))),
+                      label: Text(
+                        artist.phone!,
+                        style: theme.textTheme.bodySmall!
+                            .copyWith(color: buttonForegroundColor),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                            onPressed: () {
-                              print("Tweeting Someone");
-                            },
-                            icon: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Icon(FontAwesomeIcons.twitter)),
-                            label: Text(
-                                artist.twitter!, //TODO: FIX ALL NULL CHECKS
-                                style: theme.textTheme.bodySmall!
-                                    .copyWith(color: buttonForegroundColor))),
+                    ),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        print("Emailing Someone");
+                      },
+                      icon: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Icon(Icons.mail_outlined),
                       ),
-                    ],
-                  )),
-            ],
-          ),
-        ));
+                      label: Text(
+                        artist.email!,
+                        style: theme.textTheme.bodySmall!
+                            .copyWith(color: buttonForegroundColor),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        print("Tweeting Someone");
+                      },
+                      icon: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Icon(FontAwesomeIcons.twitter),
+                      ),
+                      label: Text(
+                        artist.twitter!, //TODO: FIX ALL NULL CHECKS
+                        style: theme.textTheme.bodySmall!
+                            .copyWith(color: buttonForegroundColor),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

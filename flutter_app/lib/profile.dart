@@ -65,6 +65,38 @@ class ProfilePageState extends State<ProfilePage> {
             key: formKey,
             child: ListView(
               children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundColor: theme.colorScheme.primary,
+                  backgroundImage: appState.artist?.profileImageUrl != null
+                      ? NetworkImage(appState.artist!.profileImageUrl!)
+                      : null,
+                  child: appState.artist?.profileImageUrl == null
+                      ? Text(
+                          appState.artist?.name != null && appState.artist!.name!.isNotEmpty ? appState.artist!.name![0] : 'A',
+                          style: theme.textTheme.headlineMedium!.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        )
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: appState.pickImageFromLibrary,
+                      icon: Icon(Icons.photo_album_outlined),
+                      label: Text('Upload Photo'),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: appState.pickImageFromCamera,
+                      icon: Icon(Icons.camera_alt_outlined),
+                      label: Text('Take Photo'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 _buildTextField(
                   controller: nameController,
                   label: 'Name',
@@ -131,8 +163,10 @@ class ProfilePageState extends State<ProfilePage> {
                         phone: phoneController.text,
                         email: emailController.text,
                         twitter: twitterController.text,
+                        profileImageUrl: appState.artist?.profileImageUrl,
                       );
                       await appState.updateArtist(updatedArtist);
+                      await appState.uploadProfileImage(); // Upload the selected profile image
                       if (!mounted) return;
                       Navigator.pop(context);
                     }
