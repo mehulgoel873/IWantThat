@@ -98,6 +98,7 @@ class MyAppState extends ChangeNotifier {
   String? artistDoc;
   Artist? artist;
   bool? isArtist;
+  bool waiting = false;
 
   MyAppState() {
     _initialize();
@@ -211,18 +212,18 @@ class MyAppState extends ChangeNotifier {
   }
 
   void pickImageFromCamera() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.camera); //TODO: Change ImageSource to Camera
+    final returnedImage = await ImagePicker().pickImage(
+        source: ImageSource.camera); //TODO: Change ImageSource to Camera
     if (returnedImage != null) {
-      _selectedImage = File(returnedImage.path); 
+      _selectedImage = File(returnedImage.path);
       print("Selected Image Done!");
       notifyListeners();
     }
   }
 
   void pickImageFromLibrary() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery); //TODO: Change ImageSource to Camera
+    final returnedImage = await ImagePicker().pickImage(
+        source: ImageSource.gallery); //TODO: Change ImageSource to Camera
     if (returnedImage != null) {
       _selectedImage = File(returnedImage.path);
       print("Selected Image Done!");
@@ -388,6 +389,11 @@ class MyAppState extends ChangeNotifier {
     } else {
       artist = artists[0];
     }
+    notifyListeners();
+  }
+
+  Future<void> setWaiting(bool v) async {
+    waiting = v;
     notifyListeners();
   }
 }
@@ -557,20 +563,26 @@ class PhotoPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: () async {
-                      print("ARTIST button pressed");
-                      bool check = await appState.startGenAI();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ArtistPage()));
-                    },
+                    onPressed: appState.waiting == true
+                        ? null
+                        : () async {
+                            appState.setWaiting(true);
+                            print("ARTIST button pressed");
+                            bool check = await appState.startGenAI();
+                            appState.setWaiting(false);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ArtistPage()));
+                          },
                     icon: Icon(Icons.person_search_outlined),
                     label: Text("Find an Artist"),
                   ),
                 ],
               ),
             ),
+            SizedBox(height: 10),
+            appState.waiting == true ? CircularProgressIndicator() : SizedBox(),
             SizedBox(
               height: 10,
             ),
