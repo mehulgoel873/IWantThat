@@ -1,0 +1,237 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+
+#privacy {
+    scroll-behavior: smooth;
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+}
+
+/* Some basic CSS overrides */
+.privacy {
+    line-height: 1.5;
+    margin-top: 5vh;
+}
+
+
+.privacy button,
+.privacy input,
+.privacy select,
+.privacy textarea {
+    font: inherit;
+}
+
+.privacy .section_header h1 {
+    color: var(--navy-blue);
+    font-family: "Amatic SC", sans-serif;
+    font-weight: 900;
+}
+
+.privacy a {
+    color: inherit;
+}
+
+.privacy img {
+    display: block;
+    max-width: 100%;
+}
+
+/* End basic CSS override */
+
+.privacy .timeline {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 32px 32px;
+    border-left: 4px solid var(--navy-blue);
+    font-size: 1.25rem;
+    margin-bottom: -3rem;
+}
+
+
+.privacy .timeline-item {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+}
+
+.privacy .timeline-item+* {
+    margin-top: 24px;
+}
+
+.privacy .timeline-item+.extra-space {
+    margin-top: 48px;
+}
+
+.privacy .timeline-item:hover .card {
+    border-color: var(--emerald);
+    box-shadow: 0 4px 4px 0 var(--emerald-light);
+    color: var(--emerald);
+}
+
+.privacy .timeline-item:hover .card .button {
+    border-color: var(--emerald-light);
+    color: var(--emerald-light);
+}
+
+.privacy .timeline-item:hover .card .button .hover-emerald {
+    filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);
+}
+
+.privacy .timeline-item:hover .icon {
+    filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);
+}
+
+.privacy .timeline-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: -52px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background-color: var(--background);
+    box-shadow: 0 0 0 8px var(--background);
+    margin-top: 24px;
+}
+
+.privacy .timeline-item-icon img {
+    width: 35px;
+    height: 35px;
+    filter: brightness(0) saturate(100%) invert(29%) sepia(50%) saturate(620%) hue-rotate(161deg) brightness(93%) contrast(95%);
+    /* https://isotropic.co/tool/hex-color-to-css-filter/  */
+}
+
+.privacy .card {
+    color: var(--navy-blue-light);
+    border: 3px solid var(--navy-blue);
+    box-shadow: 0 4px 4px 0 var(--navy-blue-light);
+    border-radius: 6px;
+    padding: 16px;
+    font-weight: 600;
+    width: 100%;
+}
+
+
+
+.privacy .card h1 {
+    padding: 0;
+    margin: 0;
+
+    font-family: "Amatic SC", sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.privacy .card h2 {
+    padding: 0;
+    margin: 0;
+
+    font-weight: 700;
+    font-size: 1.25rem;
+    font-optical-sizing: auto;
+    font-style: italic;
+}
+
+.privacy .card p {
+    margin-top: 4px;
+    color: var(--offwhite);
+}
+
+.privacy .card .simple {
+    display: none;
+}
+
+.privacy a {
+    color: var(--background);
+}
+
+.privacy .button {
+    border: 0;
+    padding: 0;
+    display: inline-flex;
+    vertical-align: middle;
+    margin-right: 4px;
+    align-items: center;
+    justify-content: center;
+    height: max-content;
+    padding: 4px 12px;
+
+    border: 5px solid var(--navy-blue);
+    border-radius: 15px;
+    background-color: var(--background);
+    color: var(--navy-blue);
+    flex-shrink: 0;
+    cursor: pointer;
+
+    font-weight: 400;
+    font-size: 1.25rem;
+    font-optical-sizing: auto;
+}
+
+.privacy .button img {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0px 16px 0px 8px;
+    filter: brightness(0) saturate(100%) invert(29%) sepia(50%) saturate(620%) hue-rotate(161deg) brightness(93%) contrast(95%);
+}
+
+.privacy .button:hover {
+    border-color: var(--emerald) !important;
+    color: var(--emerald) !important;
+    font-weight: 700;
+}
+
+.privacy .button:hover .hover-emerald {
+    filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);
+}
+
+.privacy .button:hover .icon {
+    filter: brightness(0) saturate(100%) invert(55%) sepia(4%) saturate(6920%) hue-rotate(132deg) brightness(101%) contrast(83%);
+}
+
+@media (max-width: 1200px) {
+
+    .privacy .timeline {
+        width: 95%;
+        max-width: 90%;
+    }
+
+    .privacy .card h1 {
+        font-size: 2.4rem;
+    }
+
+    .privacy .card h2 {
+        font-size: 1.75rem;
+    }
+
+    .privacy .card .detailed {
+        display: none;
+    }
+
+    .privacy .card .simple {
+        font-size: 0.9rem;
+        display: block;
+    }
+
+    .privacy .button {
+        margin-top: 0.75rem;
+        font-size: 1.75rem;
+    }
+
+    .privacy .button img {
+        display: none;
+    }
+}
