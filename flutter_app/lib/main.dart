@@ -400,11 +400,34 @@ class MyAppState extends ChangeNotifier {
 
   Future<void> deleteUserAccount() async {
     try {
-      await FirebaseAuth.instance.currentUser!.delete();
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        final userDocRef = db.collection('users').doc(userDoc);
+
+        await userDocRef.delete();
+
+        // if artist, delete
+        if (isArtist == true && artistDoc != null) {
+          final artistDocRef = db.collection('artists').doc(artistDoc);
+          await artistDocRef.delete();
+        }
+
+        //delete profile image if exists
+        if (artist?.profileImageUrl != null) {
+          final profileImageRef = FirebaseStorage.instance
+              .refFromURL(artist!.profileImageUrl!);
+          await profileImageRef.delete();
+        }
+        
+        await user.delete();
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == "requires-recent-login") {
         await _reauthenticateAndDelete();
       }
+    } catch (e) {
+      print('Error deleting user account: $e');
     }
   }
 
@@ -421,7 +444,9 @@ class MyAppState extends ChangeNotifier {
         }
         await user.delete();
       }
-    } catch (e) {}
+    } catch (e) {
+      print('Error reauthenticating and deleting user account: $e');
+    }
   }
 }
 
