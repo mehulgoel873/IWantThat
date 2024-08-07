@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
       create: (context) => MyAppState(),
       child: MaterialApp(
         title: 'I Want That',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSwatch(
@@ -213,7 +214,7 @@ class MyAppState extends ChangeNotifier {
 
   void pickImageFromCamera() async {
     final returnedImage = await ImagePicker().pickImage(
-        source: ImageSource.camera); //TODO: Change ImageSource to Camera
+        source: ImageSource.camera);
     if (returnedImage != null) {
       _selectedImage = File(returnedImage.path);
       print("Selected Image Done!");
@@ -223,7 +224,7 @@ class MyAppState extends ChangeNotifier {
 
   void pickImageFromLibrary() async {
     final returnedImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery); //TODO: Change ImageSource to Camera
+        source: ImageSource.gallery);
     if (returnedImage != null) {
       _selectedImage = File(returnedImage.path);
       print("Selected Image Done!");
@@ -396,6 +397,57 @@ class MyAppState extends ChangeNotifier {
     waiting = v;
     notifyListeners();
   }
+
+  Future<void> deleteUserAccount() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        final userDocRef = db.collection('users').doc(userDoc);
+
+        await userDocRef.delete();
+
+        // if artist, delete
+        if (isArtist == true && artistDoc != null) {
+          final artistDocRef = db.collection('artists').doc(artistDoc);
+          await artistDocRef.delete();
+        }
+
+        //delete profile image if exists
+        if (artist?.profileImageUrl != null) {
+          final profileImageRef = FirebaseStorage.instance
+              .refFromURL(artist!.profileImageUrl!);
+          await profileImageRef.delete();
+        }
+        
+        await user.delete();
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "requires-recent-login") {
+        await _reauthenticateAndDelete();
+      }
+    } catch (e) {
+      print('Error deleting user account: $e');
+    }
+  }
+
+  Future<void> _reauthenticateAndDelete() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final providerData = user.providerData.first;
+
+        if (providerData.providerId == 'apple.com') {
+          await user.reauthenticateWithProvider(AppleAuthProvider());
+        } else if (providerData.providerId == 'google.com') {
+          await user.reauthenticateWithProvider(GoogleAuthProvider());
+        }
+        await user.delete();
+      }
+    } catch (e) {
+      print('Error reauthenticating and deleting user account: $e');
+    }
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -518,7 +570,7 @@ class PhotoPage extends StatelessWidget {
                 SizedBox(width: 20),
                 ElevatedButton.icon(
                   onPressed: () {
-                    print("Capture Image Button Pressed Library");
+                    print("Capture Image Button Pressed Camera");
                     appState.pickImageFromCamera();
                   },
                   icon: Icon(Icons.photo_camera_outlined),
@@ -583,6 +635,49 @@ class PhotoPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             appState.waiting == true ? CircularProgressIndicator() : SizedBox(),
+            ElevatedButton.icon(
+              onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Delete Account?'),
+                      content: const Text(
+                          'Are you sure you want to delete your account? This action cannot be undone.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            await appState.deleteUserAccount();
+                            Navigator.of(context).pop();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AuthGate()),
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: const Text(
+                            'Delete',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: Icon(Icons.delete),
+              label: Text('Delete Account'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+            ),
             SizedBox(
               height: 10,
             ),

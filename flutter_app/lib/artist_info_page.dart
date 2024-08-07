@@ -112,12 +112,56 @@ class ArtistInfoPage extends StatelessWidget {
                     ),
                     _buildInfoRow(
                       context,
-                      icon: FontAwesomeIcons.twitter, // Update this line
+                      icon: FontAwesomeIcons.twitter,
                       label: 'Twitter',
                       value: artist.twitter ?? 'No Twitter handle provided',
                     ),
                   ],
                 ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Delete Profile?'),
+                      content: const Text(
+                          'Are you sure you want to delete your profile? This action cannot be undone.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            await appState.deleteUserAccount();
+                            Navigator.of(context).pop();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AuthGate()),
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: const Text(
+                            'Delete',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: Icon(Icons.delete),
+              label: Text('Delete Profile'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
               ),
             ),
           ],
